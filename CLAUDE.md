@@ -5,7 +5,8 @@ Nadav Delgo runs three work contexts out of one Gmail account
 
 - **Apex** — nonprofit / community organization, Hebrew-first (`apex.org.il`)
 - **VelocityX** — venture fund (`velocityx.vc`)
-- **Tinu** — US-facing venture with Ken Hu (`tinu.ai`, forwards into the hub)
+- **Tinu** — GPU / data-centre hardware with Ken Hu: DGX B300 procurement,
+  an Israeli buildout, and quoting compute to customers (`tinu.ai`)
 - **Personal** — everything else
 
 Apex and VelocityX are run **together** and share staff — most notably Avishag,
@@ -39,3 +40,8 @@ section; Tinu and personal are separate.
   `in:inbox is:important newer_than:14d`.
 - **Read-only by default.** No trashing, no marking read, no spam. Labelling
   touches the live mailbox, so offer it rather than assuming.
+- **Two labels, not four.** `Velocity + Apex` and `Tinu`. Personal threads are
+  marked IMPORTANT instead. Never mark a newsletter important — `is:important`
+  is what scopes every triage run, and polluting it breaks the next one.
+- **Hardware topics are Tinu** wherever they come from, including Hebrew mail
+  from consumer addresses (Amizur Kafri on the buildout).

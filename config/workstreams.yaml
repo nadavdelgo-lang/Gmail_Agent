@@ -91,23 +91,48 @@ workstreams:
 
   tinu:
     label: "Tinu"
-    kind: venture / startup, US-facing
-    primary_language: en
-    timezone: America/Los_Angeles   # counterparts work Pacific hours
+    kind: GPU / data-centre hardware — procurement, buildout, and quoting compute
+    primary_language: mixed        # English with Ken and US counterparts, Hebrew with Israeli suppliers
+    timezone: America/Los_Angeles   # Ken and US counterparts work Pacific hours
     domains: [tinu.ai]
     key_addresses:
       - nadav.d@tinu.ai             # the owner's own Tinu address
       - ken@tinu.ai                 # Ken Hu — co-principal
-      - ken.hu@princeton.edu
+      - ken.hu@princeton.edu        # Ken's Princeton address
       - tinuai88@gmail.com
+    what_it_actually_is: >
+      Not a generic US venture. Tinu buys, builds and resells GPU compute:
+      NVIDIA DGX B300 procurement, an Israeli data-centre buildout (potential
+      16 MW), and quoting GPU capacity to customers who ask for it. Threads
+      about racks, PDUs, cooling, UPS, power, connectivity, Nvidia compliance
+      or a price per node are Tinu — whatever address they arrive from.
+    supply_side:
+      - name: Amizur Kafri
+        addresses: [amizurkafri@gmail.com]
+        note: >
+          Main supplier-side counterpart on the Israeli data-centre buildout.
+          Sends equipment specs, vendor quotes and financing models, usually in
+          Hebrew, often as a bare forward with a one-line note. High signal —
+          his mail almost always carries a date or a decision.
+      - vendors: [eaton.com, "בזק / Bezeq"]
+        note: UPS and power from Eaton; site connectivity from Bezeq.
+    demand_side:                    # customers asking to lease or buy compute
+      - joulix.ai
+      - solmate.com
+      - niv-ai.com
     topics:
+      - DGX B300 / H100 / H200 / B200 procurement and Nvidia compliance
+      - data-centre buildout: racks, PDU, cooling, UPS, power, connectivity
+      - financing models and cost per kW
+      - quoting GPU capacity to customers
       - partner and customer calls (usually "<Company> <> Ken/Nadav")
-      - US scheduling across timezones
     signals:
-      subject_en: [tinu, "<> ken", "ken/nadav"]
+      subject_en: [tinu, GPU, DGX, B300, B200, H100, H200, nvidia, data center,
+                   datacenter, UPS, PDU, rack, kW, MW, quote, compute, "<> ken"]
+      subject_he: ["דאטה סנטר", "ארונות", "מיזוג", "אל פסק", "מפרט", "הצעה", "בזק"]
     note: >
-      Mail addressed to nadav.d@tinu.ai forwards into the hub account. Anything
-      involving Ken is Tinu unless it is explicitly an Apex or VelocityX matter.
+      Mail to nadav.d@tinu.ai forwards into the hub account. Anything involving
+      Ken is Tinu unless it is explicitly an Apex or VelocityX matter.
 
   personal:
     label: "Personal"
@@ -130,6 +155,13 @@ workstreams:
 # DISAMBIGUATION — applied in order, first match wins
 # ---------------------------------------------------------------------------
 disambiguation:
+  - rule: tinu_by_hardware_topic
+    if: >
+      thread is about GPU/DGX hardware, data-centre buildout (racks, PDU,
+      cooling, UPS, power, connectivity), Nvidia compliance, cost per kW, or
+      quoting compute capacity to a customer
+    then: tinu   # true even from a consumer-domain sender such as Amizur
+
   - rule: tinu_by_address
     if: "thread involves any tinu.ai address, or ken.hu@princeton.edu"
     then: tinu
@@ -162,9 +194,11 @@ disambiguation:
 # GMAIL LABELS the triage skill applies. Created on first run if missing.
 # ---------------------------------------------------------------------------
 labels:
-  apex: "Apex"                     # already exists in the mailbox
-  velocityx: "VelocityX"
+  apex_velocityx: "Velocity + Apex"  # one label — the two are run together
   tinu: "Tinu"
-  personal: "Personal"
-  needs_reply: "Needs Reply"
-  waiting_on: "Waiting On"
+  # Personal gets no label of its own: real personal threads are marked
+  # IMPORTANT instead. Never mark newsletters or notifications important —
+  # `is:important` is the backbone of the triage candidate set, and polluting
+  # it breaks every future run.
+  personal: IMPORTANT
+  # "Apex" (Label_9131845736770565248) predates this setup and is left alone.

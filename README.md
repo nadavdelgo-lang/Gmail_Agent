@@ -21,8 +21,11 @@ orchestrator agent.
 ## The workstreams
 
 **Apex** and **VelocityX** are run together and share staff, so they are
-triaged and reported as one context. **Tinu** is US-facing and runs on Pacific
-hours. **Personal** is the fallback.
+triaged and reported as one context under a single `Velocity + Apex` label.
+**Tinu** is the GPU and data-centre business — DGX B300 procurement, the
+Israeli buildout, and quoting compute to customers — and runs partly on US
+Pacific hours. **Personal** has no label of its own; real personal threads are
+marked IMPORTANT instead.
 
 Routing lives in `config/workstreams.yaml` — domains, key people, topics, and
 the disambiguation rules for the cases where the sender alone is not enough
