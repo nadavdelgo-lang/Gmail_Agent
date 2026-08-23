@@ -1,16 +1,18 @@
 ---
 name: runner
-description: One scheduled pass over new mail — triage what arrived since the last run, suggest calendar events, add Google Tasks, and save reply drafts. Runs four times a day on a Routine. Use when the scheduled runner fires, or when the user asks to run the runner, do a scheduled pass, or catch up on what came in since last time.
+description: One scheduled pass over new mail and WhatsApp exports — triage what arrived since the last run, suggest calendar events, add Google Tasks, and save reply drafts. Runs eight times a day on a Routine. Use when the scheduled runner fires, or when the user asks to run the runner, do a scheduled pass, or catch up on what came in since last time.
 ---
 
 # Scheduled runner
 
-Four passes a day over what actually arrived since the last one. Each run ends
+Eight passes a day over what actually arrived since the last one. Each run ends
 with three outputs: **calendar events suggested** (never created), **Google
 Tasks added**, **drafts saved**.
 
-The whole point is that the four runs feel like one assistant rather than four
-duplicate ones. Read the state rules before anything else.
+The whole point is that the eight runs feel like one assistant rather than
+eight duplicate ones. At this cadence most runs should find nothing and say so
+in one line — that is the design working, not the runner failing. Read the
+state rules before anything else.
 
 ## Ground truth
 
@@ -49,8 +51,9 @@ One day of overlap with the label as the real filter, so nothing slips through
 a gap between runs and nothing gets handled twice. Never widen to `is:unread` —
 tens of thousands of threads sit unread and that is not a work queue.
 
-If the set is empty, stop. Report "nothing new" and do nothing else. A quiet
-run is a correct run — do not go looking for work to justify the pass.
+If the set is empty, still check chat sources (step 2b), then stop. Report
+"nothing new" and do nothing else. A quiet run is a correct run — do not go
+looking for work to justify the pass. At eight runs a day, most will be quiet.
 
 ## Step 2 — triage
 
@@ -64,6 +67,42 @@ The rules that matter most here:
 - Newsletters are `noise`. Never mark one important; `is:important` scopes
   every future run and polluting it breaks the next one.
 
+## Step 2b — chat sources (WhatsApp)
+
+Read `chat_sources` in the config. Personal WhatsApp cannot be read by any
+API, so the source is a manual export the user drops into the Drive folder
+named there (default: `WhatsApp Exports`).
+
+Each run, list that folder and look for files added or modified since the last
+pass. For each new export:
+
+- Read it with the Drive tools. The format is WhatsApp's plain-text export:
+  `DD/MM/YYYY, HH:MM - Sender: message`, one line per message, continuation
+  lines wrapped. Hebrew and English both appear, often in one message.
+- Only look at messages newer than the newest one you have already handled.
+  The filename usually carries the chat name; use the timestamps inside to
+  bound what is new.
+- Route the chat to its workstream from the `watched` list. A chat that is not
+  listed still gets processed — classify it on content and say it was not in
+  the config so the user can add it.
+
+Chat earns its place because **commitments get made there that never reach
+email** — a date agreed with Avishag, a price Ken accepted. Pull out exactly
+three things and nothing else:
+
+1. commitments made (who owes what, by when)
+2. dates and times agreed
+3. asks directed at the user that have no answer yet
+
+Do not summarise the conversation. Do not carry gossip, personal remarks, or
+anything unrelated into a task or a draft.
+
+**Never reply into WhatsApp.** There is no supported write path, and the user
+did not ask for one. Chat is read-only history that feeds tasks and drafts.
+
+When an export contradicts email, the newer source wins — and say which you
+used, because an export is stale from the moment it is taken.
+
 ## Step 3 — suggest calendar events (do NOT create them)
 
 Creating an event sends invitations to other people. That is an outward-facing
@@ -76,6 +115,7 @@ commitment:
 - an agreed meeting with no invite yet
 - a deadline that needs blocked working time before it
 - a site visit, a delivery, a travel date someone stated
+- a time agreed in a WhatsApp export that has no calendar entry
 
 Each suggestion, one line: **what · when · who · which thread**. Include the
 timezone whenever the counterpart is not on Israel time — Tinu counterparts run
@@ -125,7 +165,7 @@ workstream label (`Velocity + Apex` or `Tinu`) where it is missing.
 Then report, short:
 
 ```
-Runner 12:00 · 6 new threads
+Runner 12:00 · 6 new threads · 1 new chat export (Avishag)
 
 Calendar (suggested, not created)
 • Bezeq site visit · Mon 24.8 · Amizur · thread abc123
@@ -138,6 +178,8 @@ Drafts saved (2)
 • Amizur — asks what connects the first set until Bezeq lands
 • Gilad @ Joulix — reopens the quote after 31 days
 
+From chat: Avishag agreed Tue 8.9 11:00 with Avital (no calendar entry).
+
 Set aside: 14 newsletters.
 ```
 
@@ -147,6 +189,8 @@ one line saying so is the entire report.
 ## Never
 
 - Never send mail, accept an invite, or create a calendar event.
+- Never reply into WhatsApp, and never move chat content into a task or draft
+  unless it is a commitment, a date, or an unanswered ask.
 - Never trash, spam, or mark-read anything.
 - Never mark a newsletter important.
 - Never stack a second draft on a thread that already has one.

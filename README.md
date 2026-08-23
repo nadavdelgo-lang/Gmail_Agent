@@ -18,6 +18,12 @@ session — no OAuth, no deployment, no credentials in the repo.
 For a full pass — triage, checkpoint, then draft the top items — ask for the
 orchestrator agent.
 
+A Routine runs the same pass automatically eight times a day and adds two more
+outputs: suggested calendar events and Google Tasks per workstream. It also
+reads WhatsApp exports dropped into a Drive folder, because commitments get
+made in chat that never reach email. Chat is read-only — the runner never
+replies into WhatsApp.
+
 ## The workstreams
 
 **Apex** and **VelocityX** are run together and share staff, so they are

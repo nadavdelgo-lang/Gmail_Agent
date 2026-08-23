@@ -22,7 +22,7 @@ section; Tinu and personal are separate.
 | `.claude/skills/triage/` | `/triage` — classify and rank the inbox by workstream. |
 | `.claude/skills/draft/` | `/draft` — write replies and forwards in his voice. |
 | `.claude/agents/orchestrator.md` | Full pass: triage → checkpoint → draft. |
-| `.claude/skills/runner/` | The scheduled 4×/day pass: triage → calendar suggestions → Google Tasks → drafts. |
+| `.claude/skills/runner/` | The scheduled 8×/day pass: mail + WhatsApp exports → calendar suggestions → Google Tasks → drafts. |
 
 ## Working rules
 
@@ -52,3 +52,8 @@ section; Tinu and personal are separate.
   Without those guards four runs a day produce four copies of everything.
 - **Suggest calendar events, never create them.** Creating an event mails
   invitations to other people — that is outward-facing and not delegated.
+- **WhatsApp is read-only, and manual.** No API reads personal chats — not
+  Meta's Business Platform, not any MCP connector. The supported path is
+  WhatsApp's own "Export chat" into the Drive folder named in
+  `config/workstreams.yaml`. Never reply into WhatsApp; never use an
+  unofficial client.

@@ -190,6 +190,41 @@ disambiguation:
   - rule: fallback
     then: personal
 
+
+# ---------------------------------------------------------------------------
+# CHAT SOURCES — WhatsApp and anything else that is not email
+# ---------------------------------------------------------------------------
+# No API reads personal WhatsApp chats. Meta's WhatsApp Business Platform only
+# exposes messages sent TO a business number, inside a 24-hour window; it
+# cannot see a 1:1 with Avishag or Ken, or an arbitrary group. There is no
+# WhatsApp MCP connector either. Anything that claims otherwise is an
+# unofficial client that violates WhatsApp's terms and risks the number.
+#
+# The supported path is WhatsApp's own export:
+#   chat -> ⋮ -> More -> Export chat -> Without media -> save to Drive
+# Drop the .txt in the Drive folder below and the runner reads it on the next
+# pass. It is a snapshot, not a live feed — re-export when you want it fresh.
+chat_sources:
+  drive_folder: "WhatsApp Exports"
+  export_format: "WhatsApp .txt export (without media)"
+  watched:
+    - name: Avishag Bohbot
+      workstream: apex_velocityx
+      note: >
+        Most of the real Apex/VelocityX traffic happens here rather than in
+        mail — decisions land in chat and only the artefacts reach email.
+    - name: Ken Hu
+      workstream: tinu
+      note: GPU procurement and customer quotes, US Pacific hours.
+    # Add a line per chat or group as the user names them. A group with no
+    # obvious owner takes the workstream of what it actually discusses.
+  rules:
+    - Treat an export as read-only history. Never reply into WhatsApp.
+    - An export is stale the moment it is taken. Trust email over an older
+      export when the two conflict, and say which you used.
+    - Chat is where commitments get made casually. A date agreed in chat is a
+      real date; a date guessed from chat is not.
+
 # ---------------------------------------------------------------------------
 # GMAIL LABELS the triage skill applies. Created on first run if missing.
 # ---------------------------------------------------------------------------
