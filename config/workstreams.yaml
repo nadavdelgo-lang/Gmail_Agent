@@ -1,0 +1,170 @@
+# Workstream routing table for the orchestrator.
+#
+# Derived from a scan of nadav.delgo@gmail.com (sent mail + inbox, mid-2026).
+# This is the single source of truth for "which company does this belong to".
+# Edit freely — the skills read this file, they do not hardcode anything.
+
+owner:
+  name: Nadav Delgo
+  hub_account: nadav.delgo@gmail.com   # everything lands here
+  aliases:
+    - nadav.d@tinu.ai                  # Tinu identity, forwards into the hub
+  languages: [he, en]                  # writes and receives in both
+
+# ---------------------------------------------------------------------------
+# GROUPS — Apex and VelocityX are run together and share staff.
+# Never treat a sender alone as decisive between them; see disambiguation.
+# ---------------------------------------------------------------------------
+groups:
+  apex_velocityx:
+    label: "Apex + VelocityX"
+    members: [apex, velocityx]
+    shared_people:
+      - name: Avishag
+        addresses: [avishag@apex.org.il, avishag@velocityx.vc]
+        note: >
+          Primary counterpart on BOTH sides and by far the highest-volume
+          correspondent. The address used is a weak hint, not proof — Avishag
+          mails from the apex.org.il address about VelocityX matters and vice
+          versa. Route on subject and content, not on the From: domain.
+
+# ---------------------------------------------------------------------------
+# WORKSTREAMS
+# ---------------------------------------------------------------------------
+workstreams:
+
+  apex:
+    label: "Apex"
+    kind: nonprofit / community organization
+    primary_language: he
+    domains: [apex.org.il]
+    key_addresses:
+      - avishag@apex.org.il
+      - team@apex.org.il        # internal staff list
+    partners:
+      - domain: cjp.org         # Combined Jewish Philanthropies — funder/partner
+        people: [avitals@cjp.org, liork@cjp.org, mayaz@cjp.org]
+      - domain: thecohns.us     # michael@thecohns.us — donor/partner
+      - domain: hoffmankofman.com
+        note: community programming; sometimes personal, check content
+    topics:
+      - alumni community / קהילת הבוגרים
+      - events / אירוע, event summaries / סיכום אירוע
+      - delegations / משלחת
+      - donor contributions ("<Name> - contribution to Apex")
+      - the closed community group / שבט
+      - playbooks, registration, give-back
+    signals:
+      subject_he: [אפקס, בוגרים, משלחת, אירוע, שבט, תרומה, קהילה]
+      subject_en: [apex, alumni, delegation, contribution, give-back, community]
+
+  velocityx:
+    label: "VelocityX"
+    kind: venture capital fund
+    primary_language: mixed        # Hebrew internally, English with founders
+    domains: [velocityx.vc]
+    key_addresses:
+      - avishag@velocityx.vc
+    tools:
+      crm: Affinity
+    topics:
+      - due diligence / DD
+      - investment opportunities, deal flow
+      - founder and investor intros
+      - portfolio and co-investor coordination
+    counterparties:               # companies and funds seen in the deal flow
+      - audiseai.com
+      - pi.security
+      - oz.security
+      - joulix.ai
+      - niv-ai.com
+      - getimpala.ai
+      - camelotbiocapital.com
+      - overline.vc
+      - tauventures.co.il
+      - squaretower.xyz
+      - stoaexchange.com
+    signals:
+      subject_he: [הזדמנות, השקעה, בדיקת נאותות]
+      subject_en: [DD, due diligence, investment, opportunity, deck, term sheet,
+                   cap table, affinity, intro, portfolio]
+
+  tinu:
+    label: "Tinu"
+    kind: venture / startup, US-facing
+    primary_language: en
+    timezone: America/Los_Angeles   # counterparts work Pacific hours
+    domains: [tinu.ai]
+    key_addresses:
+      - nadav.d@tinu.ai             # the owner's own Tinu address
+      - ken@tinu.ai                 # Ken Hu — co-principal
+      - ken.hu@princeton.edu
+      - tinuai88@gmail.com
+    topics:
+      - partner and customer calls (usually "<Company> <> Ken/Nadav")
+      - US scheduling across timezones
+    signals:
+      subject_en: [tinu, "<> ken", "ken/nadav"]
+    note: >
+      Mail addressed to nadav.d@tinu.ai forwards into the hub account. Anything
+      involving Ken is Tinu unless it is explicitly an Apex or VelocityX matter.
+
+  personal:
+    label: "Personal"
+    kind: personal
+    primary_language: he
+    is_default: true               # the fallback when nothing else matches
+    includes:
+      - family and friends on consumer mail domains
+      - government and administrative paperwork (e.g. mops.gov.il)
+      - personal finance, health, travel, logistics
+      - "service notifications: github, google accounts, spotify, calendly,
+        drive shares, read.ai"
+    note: >
+      Consumer-domain senders (gmail.com and similar) are NOT automatically
+      personal — much of the Apex community corresponds from personal
+      addresses. Classify those on content, and only fall back to personal
+      when no work signal is present.
+
+# ---------------------------------------------------------------------------
+# DISAMBIGUATION — applied in order, first match wins
+# ---------------------------------------------------------------------------
+disambiguation:
+  - rule: tinu_by_address
+    if: "thread involves any tinu.ai address, or ken.hu@princeton.edu"
+    then: tinu
+
+  - rule: apex_vs_velocityx_by_content
+    if: "sender is Avishag on either domain"
+    then: >
+      Decide from the subject and body, not the domain. Money going OUT to a
+      company, DD, deal flow, cap tables and founder intros are VelocityX.
+      Community, events, delegations, alumni, staff coordination and money
+      coming IN as donations are Apex. If the thread genuinely spans both,
+      tag it apex_velocityx and say so in the brief.
+
+  - rule: dealflow_domain
+    if: "counterparty domain is listed under velocityx.counterparties"
+    then: velocityx
+
+  - rule: apex_partner_domain
+    if: "sender is on an Apex partner domain (cjp.org, thecohns.us)"
+    then: apex
+
+  - rule: automated_noise
+    if: "sender is a no-reply / notification address"
+    then: personal   # and almost always FYI priority, not action
+
+  - rule: fallback
+    then: personal
+
+# ---------------------------------------------------------------------------
+# GMAIL LABELS the triage skill applies. Created on first run if missing.
+# ---------------------------------------------------------------------------
+labels:
+  apex: "Apex"                     # already exists in the mailbox
+  velocityx: "VelocityX"
+  tinu: "Tinu"
+  personal: "Personal"
+  needs_reply: "Needs Reply"
+  waiting_on: "Waiting On"
