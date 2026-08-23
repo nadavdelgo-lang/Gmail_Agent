@@ -22,6 +22,7 @@ section; Tinu and personal are separate.
 | `.claude/skills/triage/` | `/triage` — classify and rank the inbox by workstream. |
 | `.claude/skills/draft/` | `/draft` — write replies and forwards in his voice. |
 | `.claude/agents/orchestrator.md` | Full pass: triage → checkpoint → draft. |
+| `.claude/skills/runner/` | The scheduled 4×/day pass: triage → calendar suggestions → Google Tasks → drafts. |
 
 ## Working rules
 
@@ -45,3 +46,9 @@ section; Tinu and personal are separate.
   is what scopes every triage run, and polluting it breaks the next one.
 - **Hardware topics are Tinu** wherever they come from, including Hebrew mail
   from consumer addresses (Amizur Kafri on the buildout).
+- **The runner has no memory between runs.** A fresh session fires each time,
+  so the mailbox is the state store: the `Runner/Handled` label, plus a
+  `list_drafts` check before drafting and a task-list check before adding.
+  Without those guards four runs a day produce four copies of everything.
+- **Suggest calendar events, never create them.** Creating an event mails
+  invitations to other people — that is outward-facing and not delegated.
