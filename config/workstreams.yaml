@@ -191,6 +191,47 @@ disambiguation:
     then: personal
 
 
+
+# ---------------------------------------------------------------------------
+# DEAL TRACKER — the Tinu GPU pipeline sheet
+# ---------------------------------------------------------------------------
+# Standing instruction: every time the user sends a chat from Ken, or from a
+# group Ken is in, update this tracker from it. See
+# .claude/skills/deal-tracker/SKILL.md for the procedure.
+deal_tracker:
+  title: "GPU Compute Deal Tracker"
+  file_id: "1yI5bB7hoFYWWH8ml4vgsFKeHt0gbtH-P"
+  url: "https://docs.google.com/spreadsheets/d/1yI5bB7hoFYWWH8ml4vgsFKeHt0gbtH-P/edit"
+  format: xlsx          # MUST become a native Google Sheet before writes work
+  writable: false       # flip to true, and update file_id, after conversion
+  worksheets: ["Deal Tracker", "Stage Legend"]
+  columns:
+    - ID
+    - Deal / Lead
+    - Company / Counterparty
+    - Contact(s)
+    - Product / Ask
+    - Volume / Scope
+    - Value / Terms
+    - Stage
+    - Last Contact
+    - Next Step
+  stages:               # controlled vocabulary, priority order — never invent one
+    - Committed/Closing
+    - Quote Sent
+    - Negotiating
+    - Active - POC Running
+    - Meeting Scheduled
+    - Discovery
+    - Backlog
+    - Parked / Not Now
+  write_path: >
+    Zapier Google Sheets (GoogleSheetsV2CLIAPI) — lookup_row / update_row /
+    add_row. The connection for nadav.delgo@gmail.com is already authorised.
+    The Google Sheets API cannot address an uploaded .xlsx, so the file has to
+    be a native Google Sheet first. Never rebuild the file by re-uploading
+    bytes — it breaks the link and risks a live commercial record.
+
 # ---------------------------------------------------------------------------
 # CHAT SOURCES — WhatsApp and anything else that is not email
 # ---------------------------------------------------------------------------
@@ -215,7 +256,10 @@ chat_sources:
         mail — decisions land in chat and only the artefacts reach email.
     - name: Ken Hu
       workstream: tinu
-      note: GPU procurement and customer quotes, US Pacific hours.
+      note: >
+        GPU procurement and customer quotes, US Pacific hours. Every Ken chat
+        — 1:1 or a group he is in — also updates the deal_tracker above. That
+        is a standing instruction; the user does not ask each time.
     # Add a line per chat or group as the user names them. A group with no
     # obvious owner takes the workstream of what it actually discusses.
   rules:

@@ -23,6 +23,7 @@ section; Tinu and personal are separate.
 | `.claude/skills/draft/` | `/draft` — write replies and forwards in his voice. |
 | `.claude/agents/orchestrator.md` | Full pass: triage → checkpoint → draft. |
 | `.claude/skills/runner/` | The scheduled 8×/day pass: mail + WhatsApp exports → calendar suggestions → Google Tasks → drafts. |
+| `.claude/skills/deal-tracker/` | Standing instruction: every Ken chat updates the GPU Compute Deal Tracker. |
 
 ## Working rules
 
@@ -52,6 +53,10 @@ section; Tinu and personal are separate.
   Without those guards four runs a day produce four copies of everything.
 - **Suggest calendar events, never create them.** Creating an event mails
   invitations to other people — that is outward-facing and not delegated.
+- **Every Ken chat updates the deal tracker.** A chat with Ken, or a group he
+  is in, is a standing trigger — the user does not ask each time. Never write a
+  figure Ken did not state, and never overwrite the commercial history in
+  `Value / Terms`; it is the audit trail of a live negotiation.
 - **WhatsApp is read-only, and manual.** No API reads personal chats — not
   Meta's Business Platform, not any MCP connector. The supported path is
   WhatsApp's own "Export chat" into the Drive folder named in
