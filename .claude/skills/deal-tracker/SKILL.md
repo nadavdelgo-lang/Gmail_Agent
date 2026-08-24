@@ -36,9 +36,16 @@ Write with the Zapier Google Sheets actions (`GoogleSheetsV2CLIAPI`) —
 
 **The file must be a native Google Sheet.** The Google Sheets API cannot
 address an uploaded `.xlsx`, so if the tracker is still `.xlsx`, writing will
-fail — say so and stop rather than working around it. Never rebuild the file
-by re-uploading bytes: that fragments version history, breaks the link, and
-risks corrupting a live commercial record.
+fail — say so rather than working around it. Never rebuild the file by
+re-uploading bytes: that fragments version history, breaks the link, and risks
+corrupting a live commercial record.
+
+**When you cannot write, do not throw the extraction away.** Append the fully
+prepared row to `config/pending/deal-tracker-queue.md` so nothing is lost, and
+tell the user it is queued. On any later run, check that file first: if the
+tracker is now writable, flush the queue into the sheet — matching by
+counterparty so an entry already applied is not written twice — and delete
+what you applied.
 
 ## What to extract from a Ken chat
 
