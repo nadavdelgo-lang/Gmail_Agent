@@ -36,7 +36,21 @@ Write with the Zapier Google Sheets actions (`GoogleSheetsV2CLIAPI`) —
 
 **The file must be a native Google Sheet.** The Google Sheets API cannot
 address an uploaded `.xlsx`, so if the tracker is still `.xlsx`, writing will
-fail — say so rather than working around it. Never rebuild the file by
+fail — say so rather than working around it. The exact error Google returns is:
+
+> This operation is not supported for this document. The document must not be
+> an Office file.
+
+Check the format before writing: `get_file_metadata` on the file id, and look
+at `fileExtension`. A `.xlsx` opens in the Sheets editor and gets a
+`docs.google.com/spreadsheets/d/...` URL, so **the link looks native even when
+it is not** — the tells are `rtpof=true` in the URL and an `.XLSX` badge beside
+the title. Do not argue the point from the URL; check the metadata, or attempt
+the write and quote the error.
+
+The fix is the user's: File → Save as Google Sheets, which creates a new file
+with a new id. Update `deal_tracker.file_id` and set `writable: true` when it
+lands. Never rebuild the file by
 re-uploading bytes: that fragments version history, breaks the link, and risks
 corrupting a live commercial record.
 
