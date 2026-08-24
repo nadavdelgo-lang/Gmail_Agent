@@ -41,6 +41,30 @@ mailbox itself is the state store. Three guards, all of them required:
 If any guard is unavailable, do less rather than more. A duplicate draft on a
 live thread with a funder is worse than a missed one.
 
+## Step 0 — the gate: is there anything new at all?
+
+Every run starts here, and most runs end here. Make these two cheap checks
+first and do nothing else until one of them comes back non-empty.
+
+1. **New mail.** Run the Step 1 candidate query. Nothing else, not even
+   `list_drafts`, comes before it.
+2. **A new chat export.** Only if check 1 came back empty: list the Drive
+   folder named in `chat_sources`. One call. If the folder does not exist,
+   that is the answer — say so in the one-line report and move on.
+
+If both are empty, **stop right there**: no triage, no calendar read, no
+`list_drafts`, no task-list read, no labelling, no Zapier calls. Report one
+line — `Runner HH:MM · nothing new` — and end the run. At eight passes a day
+this is the normal outcome, not a failure.
+
+Only when one of the two comes back with something do you go on to Step 1.
+
+**The gate is an early exit, not a conditional fire.** A Routine fires on a
+clock and on nothing else, so a session still starts eight times a day; what
+the gate saves is the entire pass behind it — typically one search call instead
+of thirty. Firing only when a genuinely new mail arrives would need an external
+mail-event trigger, which this setup does not have.
+
 ## Step 1 — candidate set
 
 ```
@@ -51,9 +75,13 @@ One day of overlap with the label as the real filter, so nothing slips through
 a gap between runs and nothing gets handled twice. Never widen to `is:unread` —
 tens of thousands of threads sit unread and that is not a work queue.
 
-If the set is empty, still check chat sources (step 2b), then stop. Report
-"nothing new" and do nothing else. A quiet run is a correct run — do not go
-looking for work to justify the pass. At eight runs a day, most will be quiet.
+**Use the label's display name, never its ID.** `-label:Runner/Handled`
+excludes correctly. `-label:Label_5` silently excludes nothing and hands back
+every thread the last run already handled — four duplicate passes a day. The
+Gmail tool's own documentation says it wants label IDs; for this exclusion it
+is wrong. Verified 24/08/2026.
+
+A quiet run is a correct run — do not go looking for work to justify the pass.
 
 ## Step 2 — triage
 
