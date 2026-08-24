@@ -200,13 +200,17 @@ disambiguation:
 # .claude/skills/deal-tracker/SKILL.md for the procedure.
 deal_tracker:
   title: "GPU Compute Deal Tracker"
-  file_id: "1yI5bB7hoFYWWH8ml4vgsFKeHt0gbtH-P"
-  url: "https://docs.google.com/spreadsheets/d/1yI5bB7hoFYWWH8ml4vgsFKeHt0gbtH-P/edit"
-  format: xlsx          # MUST become a native Google Sheet before writes work
-  writable: false       # flip to true, and update file_id, after conversion
-  worksheets: ["Deal Tracker", "Stage Legend"]
+  file_id: "10_6E3oLHeQ2T8aTeM_aIkQG8-BhQF-XIEkdYRbw-lJA"
+  url: "https://docs.google.com/spreadsheets/d/10_6E3oLHeQ2T8aTeM_aIkQG8-BhQF-XIEkdYRbw-lJA/edit"
+  format: native_google_sheet     # converted 24/08/2026; writes confirmed working
+  writable: true
+  superseded_xlsx: "1yI5bB7hoFYWWH8ml4vgsFKeHt0gbtH-P"   # frozen snapshot, do not write
+  worksheets:
+    "Deal Tracker": 691243873     # gid — Zapier wants the gid, not the name
+    "Stage Legend": 1719303824
+  header_row: 1                   # data starts at row 2, so ID N sits on row N+1
   columns:
-    - ID
+    - Deal Tracker ID             # column A header is literally this, not "ID"
     - Deal / Lead
     - Company / Counterparty
     - Contact(s)

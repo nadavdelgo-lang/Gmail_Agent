@@ -34,6 +34,16 @@ Write with the Zapier Google Sheets actions (`GoogleSheetsV2CLIAPI`) —
 `lookup_row` / `get_many_rows` to find the row, `update_row` to change it,
 `add_row` for a new deal. The connection is already authorised.
 
+Three things that cost time the first run, all in the config:
+
+- `worksheet` takes the **gid**, not the sheet name. "Deal Tracker" is
+  `691243873`. Passing the name silently resolves to nothing.
+- Resolve the enums in order — pass `drive: "My Drive"` and `spreadsheet`
+  first, then `worksheet`, then re-inspect to get `dynamic_properties_schema`,
+  which maps `COL$A`…`COL$J` to the headers.
+- Column A is headed **`Deal Tracker ID`**, not `ID`. Header is row 1, so a
+  deal with ID N lives on sheet row N+1.
+
 **The file must be a native Google Sheet.** The Google Sheets API cannot
 address an uploaded `.xlsx`, so if the tracker is still `.xlsx`, writing will
 fail — say so rather than working around it. The exact error Google returns is:
