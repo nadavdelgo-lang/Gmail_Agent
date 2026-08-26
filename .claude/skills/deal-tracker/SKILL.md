@@ -1,13 +1,22 @@
 ---
 name: deal-tracker
-description: Update the GPU Compute Deal Tracker from a Ken chat. Use whenever the user sends, pastes, forwards or exports a WhatsApp chat with Ken Hu or a group Ken is in — the tracker is updated from it as a standing instruction, without being asked each time. Also use when the user asks to update the deal tracker, the GPU tracker, or the Tinu pipeline sheet.
+description: Update the GPU Compute Deal Tracker from a Ken chat or from Amizur Kafri on the Israeli buildout. Use whenever the user sends, pastes, forwards or exports a chat or mail from Ken Hu, a group Ken is in, or Amizur Kafri — the tracker is updated from it as a standing instruction, without being asked each time. Also use when the user asks to update the deal tracker, the GPU tracker, or the Tinu pipeline sheet.
 ---
 
 # GPU Compute Deal Tracker
 
-A standing instruction: **every time the user sends a chat from Ken, or from a
-group Ken is in, update the tracker from it.** He does not have to ask. Ken
-chat in → tracker updated → report what changed.
+Two standing instructions. The user does not have to ask for either — signal
+in, tracker updated, report what changed.
+
+| Trigger | Goes to |
+|---|---|
+| A chat from **Ken Hu**, or a group Ken is in | whichever row the counterparty matches |
+| Mail or a chat from **Amizur Kafri** | **row 10** — the Israeli site buildout |
+
+Amizur is the supply side, not a customer. His mail is almost always about the
+Migdal HaEmek / Nahalal site: equipment specs, vendor quotes, power approvals,
+fibre, structural work. It carries dates and figures more reliably than anything
+else in the inbox, and it moves one row rather than the whole sheet.
 
 ## The file
 
@@ -71,6 +80,28 @@ tracker is now writable, flush the queue into the sheet — matching by
 counterparty so an entry already applied is not written twice — and delete
 what you applied.
 
+## What to extract from Amizur (row 10)
+
+He writes short Hebrew mail, usually a bare forward with a one-line note, and
+almost every one carries something that changes a cell:
+
+- **a vendor quote** — cabinets, PDU, cooling, UPS, CDUs, fibre
+- **a power figure or an approval** — MVA/kVA available, the 910A/630kVA local
+  approval, anything from the electric utility
+- **a connectivity change** — the Bezeq 1000/1000 line, lead time from order,
+  competing quotes
+- **a lead time or a site date** — a survey, a delivery, an installation window
+- **a named third party** — Eaton, Bezeq, Ziv Ben Yehuda (structural engineer)
+- **a blocker** — land or building rights on plot 105B, CDU financing
+
+Row 10 already carries the ~$27M B300 quote (~$600K/node), 1.2 MVA available
+against a 4 MW target, and the ~1.5 month Bezeq lead time from order. Append
+against those, do not replace them.
+
+**The hard date on this row is 11/09/2026** — first set of 8 nodes live.
+Anything in his mail that moves that date is the most important thing in it,
+and belongs in the report even if it changes no cell.
+
 ## What to extract from a Ken chat
 
 Ken talks in prices, lead times and allocations. Pull only what changes a
@@ -88,7 +119,10 @@ deal tracker.
 
 ## Matching to a row
 
-Match on **counterparty first**, then product. The tracker already carries
+**Amizur always means row 10** unless he is clearly talking about a different
+site or a different deal — say so and stop rather than inventing a row.
+
+For everything else, match on **counterparty first**, then product. The tracker already carries
 Joulix, Guy Solmate, Guy Marom, Idan Pearl Research, Coret AI, Yuval Steuer,
 Blue Ocean, Isquered, Amizur Kafri, Sharon AI and Impala AI.
 
@@ -123,6 +157,13 @@ chat is newer. But **flag it, do not silently overwrite** — the sheet holds
 quoted prices that may already be out with a customer. Report it as
 `was X → now Y (Ken, chat DD/MM)` and let the user confirm anything that
 changes a price already quoted.
+
+## Dates go to the calendar too
+
+Any date agreed in the source — a site survey, a delivery window, a call, an
+expiry — also becomes a **calendar suggestion** in the same reply. Suggest,
+never create: creating an event mails invitations to other people. One line:
+what · when · who · which row.
 
 ## Report
 

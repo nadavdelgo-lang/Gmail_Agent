@@ -23,7 +23,8 @@ section; Tinu and personal are separate.
 | `.claude/skills/draft/` | `/draft` — write replies and forwards in his voice. |
 | `.claude/agents/orchestrator.md` | Full pass: triage → checkpoint → draft. |
 | `.claude/skills/runner/` | The scheduled 8×/day pass: mail + WhatsApp exports → calendar suggestions → Google Tasks → drafts. |
-| `.claude/skills/deal-tracker/` | Standing instruction: every Ken chat updates the GPU Compute Deal Tracker. |
+| `.claude/skills/deal-tracker/` | Standing instruction: every Ken chat, and every Amizur mail, updates the GPU Compute Deal Tracker. |
+| `.claude/skills/avishag-register/` | Weekly refresh of the task register shared with Avishag. |
 
 ## Working rules
 
@@ -51,10 +52,19 @@ section; Tinu and personal are separate.
   so the mailbox is the state store: the `Runner/Handled` label, plus a
   `list_drafts` check before drafting and a task-list check before adding.
   Without those guards four runs a day produce four copies of everything.
+- **A date agreed anywhere becomes a calendar suggestion, immediately.** Mail,
+  a WhatsApp export, a pasted thread, a deal-tracker update — if the source
+  says a date and time were agreed and there is no calendar entry, surface it
+  in that same reply. Do not wait for a scheduled runner pass; the runner is a
+  safety net, not the only path.
 - **Suggest calendar events, never create them.** Creating an event mails
   invitations to other people — that is outward-facing and not delegated.
-- **Every Ken chat updates the deal tracker.** A chat with Ken, or a group he
-  is in, is a standing trigger — the user does not ask each time. Never write a
+  Read the calendar first so a suggestion accounts for what is already booked,
+  and never suggest a date that was inferred rather than stated.
+- **Every Ken chat, and every Amizur mail, updates the deal tracker.** A chat
+  with Ken or a group he is in routes to whichever row matches; anything from
+  Amizur Kafri routes to row 10, the Israeli buildout. Both are standing
+  triggers — the user does not ask each time. Never write a
   figure Ken did not state, and never overwrite the commercial history in
   `Value / Terms`; it is the audit trail of a live negotiation.
 - **WhatsApp is read-only, and manual.** No API reads personal chats — not

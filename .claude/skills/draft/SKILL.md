@@ -64,6 +64,15 @@ A draft with a marker is fine. A draft with a plausible-sounding invented
 figure is a real problem — this mail goes to funders, founders and government
 offices.
 
+## Step 4b — if the draft agrees a time, say so
+
+When a draft proposes or accepts a specific date and time, add a one-line
+calendar suggestion beside it in the report: what · when · who. The user is
+about to commit to a slot, and the entry should not wait for a later pass.
+
+Suggest only — never create the event, and never suggest a time the thread did
+not actually put on the table.
+
 ## Step 5 — save, never send
 
 Create a **draft** on the thread. Never call a send tool. Never send.

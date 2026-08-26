@@ -76,6 +76,20 @@ Two things to get right, because they are where the value is:
   mail is a bare forward to Avishag or Ken. Do not turn those into
   needs-reply items for the user.
 
+## Step 3b — dates agreed
+
+While reading threads, collect every **date and time that was actually agreed**
+and has no calendar entry — a confirmed meeting, a site visit, a delivery, a
+deadline someone committed to. Surface them as calendar suggestions at the end
+of the report, one line each: what · when · who · which thread.
+
+Suggest, never create — an event mails invitations to other people. Never
+suggest a date you inferred: "next week" with nothing more stays a question,
+not a suggestion. Include the timezone whenever the counterpart is not on
+Israel time.
+
+This runs in every triage, not only inside a scheduled runner pass.
+
 ## Step 4 — rank
 
 Within each workstream, order by: an explicit ask with a deadline, then a
