@@ -88,6 +88,12 @@ suggest a date you inferred: "next week" with nothing more stays a question,
 not a suggestion. Include the timezone whenever the counterpart is not on
 Israel time.
 
+**Also add each one as a Google Task** in the matching workstream list, per
+`calendar_suggestions` in the config — title `📅 who, when — add to calendar?`,
+due date the event date, notes carrying the thread link. Check the list first
+and skip if a task for the same who+when already exists. The chat report is
+what the user reads now; the task is what survives after this session ends.
+
 This runs in every triage, not only inside a scheduled runner pass.
 
 ## Step 4 — rank

@@ -71,7 +71,9 @@ calendar suggestion beside it in the report: what · when · who. The user is
 about to commit to a slot, and the entry should not wait for a later pass.
 
 Suggest only — never create the event, and never suggest a time the thread did
-not actually put on the table.
+not actually put on the table. Add it as a Google Task too, same as triage —
+see `calendar_suggestions` in the config — so it does not depend on the user
+seeing this particular reply.
 
 ## Step 5 — save, never send
 

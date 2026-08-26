@@ -236,6 +236,32 @@ deal_tracker:
     be a native Google Sheet first. Never rebuild the file by re-uploading
     bytes — it breaks the link and risks a live commercial record.
 
+
+# ---------------------------------------------------------------------------
+# CALENDAR SUGGESTIONS — where they actually live
+# ---------------------------------------------------------------------------
+# Events are suggested, never created (creating one mails invitations — see
+# CLAUDE.md). A suggestion mentioned only in a chat reply is invisible the
+# moment that session ends, and the runner fires 8x/day as fresh background
+# sessions, so a suggestion that lives only in reply text is effectively lost.
+#
+# Every calendar suggestion therefore ALSO becomes a Google Task, in the
+# workstream list it belongs to (see labels.* below for the list names), so
+# there is one durable place to check regardless of which session produced it.
+calendar_suggestions:
+  persist_as: google_task
+  title_prefix: "📅 "          # marks it as a suggestion, not an action item
+  title_format: "📅 {who}, {when} — add to calendar?"
+  due: the suggested event's date
+  notes: source thread/message link + one line of context
+  dedupe: >
+    Before adding, check the target list for an existing task whose title
+    contains the same who+when. Skip if found — never stack duplicate
+    suggestions for the same event.
+  dismissal: >
+    The user dismisses a suggestion by deleting the task. Do not recreate a
+    task that was deleted for the same who+when in the same source thread.
+
 # ---------------------------------------------------------------------------
 # CHAT SOURCES — WhatsApp and anything else that is not email
 # ---------------------------------------------------------------------------

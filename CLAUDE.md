@@ -61,6 +61,13 @@ section; Tinu and personal are separate.
   invitations to other people — that is outward-facing and not delegated.
   Read the calendar first so a suggestion accounts for what is already booked,
   and never suggest a date that was inferred rather than stated.
+- **A suggestion is not real until it's a Google Task.** A date mentioned only
+  in a chat reply disappears the moment that session ends — the runner alone
+  fires 8x/day as fresh sessions, each producing output nobody may ever open.
+  Every calendar suggestion also becomes a Task in the matching workstream
+  list (see `calendar_suggestions` in `config/workstreams.yaml`), so there is
+  one durable place to check it. Dedupe by who+when before adding; the user
+  dismisses a suggestion by deleting the task.
 - **Every Ken chat, and every Amizur mail, updates the deal tracker.** A chat
   with Ken or a group he is in routes to whichever row matches; anything from
   Amizur Kafri routes to row 10, the Israeli buildout. Both are standing

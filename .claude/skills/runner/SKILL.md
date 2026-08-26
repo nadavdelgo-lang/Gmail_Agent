@@ -124,6 +124,14 @@ US Pacific.
 Never suggest an event for a date you inferred. If the thread says "next week"
 and nothing more, say so instead of picking a day.
 
+**Persist every suggestion as a Google Task**, not just a line in this run's
+report — this skill fires 8x/day as a fresh background session, and a
+suggestion that only exists in one run's output is invisible unless the user
+opens that exact run. Use `calendar_suggestions` in the config: title
+`📅 who, when — add to calendar?`, due date the event date, notes with the
+thread link. Check the target list first and skip a duplicate who+when. This
+task IS the deliverable of this step — the report line is secondary.
+
 ## Step 4 — add Google Tasks
 
 Google Tasks runs through the Zapier MCP (`GoogleTasksCLIAPI`, action `task`).
@@ -167,7 +175,7 @@ Then report, short:
 ```
 Runner 12:00 · 6 new threads · 1 new chat export (Avishag)
 
-Calendar (suggested, not created)
+Calendar (suggested → added as Tasks, not created as events)
 • Bezeq site visit · Mon 24.8 · Amizur · thread abc123
 
 Tasks added (3)

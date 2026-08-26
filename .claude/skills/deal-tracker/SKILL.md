@@ -161,7 +161,9 @@ changes a price already quoted.
 ## Dates go to the calendar too
 
 Any date agreed in the source — a site survey, a delivery window, a call, an
-expiry — also becomes a **calendar suggestion** in the same reply. Suggest,
+expiry — also becomes a **calendar suggestion** in the same reply, AND a
+Google Task in the matching list (Tinu for Ken/Amizur) per
+`calendar_suggestions` in the config, so it survives past this reply. Suggest,
 never create: creating an event mails invitations to other people. One line:
 what · when · who · which row.
 
