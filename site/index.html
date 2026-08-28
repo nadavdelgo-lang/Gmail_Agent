@@ -680,7 +680,11 @@ dialog.sheet::backdrop{background:rgba(12,18,24,.55);backdrop-filter:blur(3px)}
   </form>
 </dialog>
 
-<script id="state" type="application/json">{}</script>
+<!-- The page carries a copy of its own source, so it can publish a complete
+     replacement document without serialising the live DOM. build-artifact.py
+     fills both placeholders in. -->
+<script id="shell" type="text/plain">%%SHELL%%</script>
+<script id="state" type="application/json">%%STATE%%</script>
 <script>
 (() => {
 "use strict";
@@ -793,7 +797,9 @@ const NOTICE = {
   local: ["Not shared yet",
     "This copy of the page saves to this browser only. Open the shared link to add things everyone can see."],
   recovered: ["Recovered",
-    "Someone else saved while you were editing. Your changes were kept and re-applied on top of theirs."]
+    "Someone else saved while you were editing. Your changes were kept and re-applied on top of theirs."],
+  too_large: ["Too big to save",
+    "The page has outgrown what can be published, almost certainly because of the photos. Delete a few of the heaviest ones and it will save again — your latest change is still here in the meantime."]
 };
 function showNotice(kind) {
   const [tag, txt] = NOTICE[kind] || [];
@@ -801,6 +807,62 @@ function showNotice(kind) {
   $("#noticeTag").textContent = tag;
   $("#noticeTxt").textContent = txt;
   $("#notice").classList.add("is-on");
+}
+
+/* The page carries a base64 copy of its own source (#shell), so it can hand the
+   host a complete replacement document rather than serialising the live DOM.  */
+const b64 = {
+  enc(str) {
+    const bytes = new TextEncoder().encode(str);
+    let out = "";
+    for (let i = 0; i < bytes.length; i += 0x8000) out += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    return btoa(out);
+  },
+  dec(txt) { return new TextDecoder().decode(Uint8Array.from(atob(txt), (c) => c.charCodeAt(0))); }
+};
+const MARK = { shell: "%" + "%SHELL%" + "%", state: "%" + "%STATE%" + "%" };
+const SHELL = (() => {
+  const el = document.getElementById("shell");
+  const raw = ((el && el.textContent) || "").trim();
+  if (!raw || raw === MARK.shell) return "";       // running straight from the repo source
+  try { return b64.dec(raw); } catch (e) { return ""; }
+})();
+const DOC_HEAD = '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n' +
+                 '<meta name="viewport" content="width=device-width, initial-scale=1">\n';
+const DOC_TAIL = "\n</body>\n</html>\n";
+
+function buildDoc(state) {
+  if (!SHELL) return "";
+  const json = JSON.stringify(state).replace(/<\//g, "<\\/");
+  // function replacers: $ sequences in the content must not be read as patterns
+  return DOC_HEAD +
+    SHELL.replace(MARK.shell, () => b64.enc(SHELL)).replace(MARK.state, () => json) +
+    DOC_TAIL;
+}
+
+/* Which publish form works here. The files form leaves this view running, so it
+   is the nicer one — but it is unavailable on a publicly shared artifact, where
+   the whole-document form is the only way to save. */
+const MODE_KEY = LS_KEY + ":mode";
+let saveMode = "files";
+try { saveMode = localStorage.getItem(MODE_KEY) === "html" ? "html" : "files"; } catch (e) {}
+const setMode = (m) => { saveMode = m; try { localStorage.setItem(MODE_KEY, m); } catch (e) {} };
+
+/* the whole-document form reloads this view, so hold our place across it */
+const PLACE_KEY = LS_KEY + ":place";
+function rememberPlace() {
+  try { sessionStorage.setItem(PLACE_KEY, JSON.stringify({ y: window.scrollY, d: activeDay })); } catch (e) {}
+}
+function restorePlace() {
+  let pl = null;
+  try { pl = JSON.parse(sessionStorage.getItem(PLACE_KEY) || "null"); sessionStorage.removeItem(PLACE_KEY); } catch (e) {}
+  if (!pl) return;
+  if (typeof pl.d === "number" && pl.d < STATE.days.length) { activeDay = pl.d; renderDays(); }
+  if (typeof pl.y !== "number") return;
+  const go = () => window.scrollTo(0, pl.y);
+  go();
+  requestAnimationFrame(go);
+  window.addEventListener("load", go, { once: true });   // again once fonts have settled
 }
 
 let pubTimer = null, publishing = false;
@@ -814,12 +876,26 @@ function persist() {
   pubTimer = setTimeout(publishNow, 900);
 }
 
+/* codes that mean "this publish form is not available here", not "you cannot write" */
+const FORM_UNAVAILABLE = ["capability_disabled", "read_only_path", "transform_error", "invalid_content"];
+const READ_ONLY = ["not_writer", "not_granted", "not_declared", "capability_removed", "consent_required"];
+
+function sendState() {
+  const doc = buildDoc(STATE);
+  if (saveMode === "html") {
+    if (!doc) return Promise.reject({ code: "capability_disabled", message: "no page source to publish" });
+    rememberPlace();
+    return ART.publish(doc);
+  }
+  return ART.publish(doc ? { "index.html": doc } : { "data/state.json": JSON.stringify(STATE) });
+}
+
 async function publishNow() {
   if (!ART || publishing || !pending.length) return;
   publishing = true;
   const sent = pending.length;
   try {
-    await ART.publish({ "data/state.json": JSON.stringify(STATE) });
+    await sendState();
     pending = pending.slice(sent);      // anything added mid-flight stays queued
     writePending();
     setChip(pending.length ? "saving" : "shared");
@@ -827,12 +903,18 @@ async function publishNow() {
   } catch (err) {
     const code = err && err.code;
     if (code === "conflict") {
-      setChip("conflict");              // the shell reloads us; boot() replays `pending`
-    } else if (["not_writer", "not_granted", "not_declared", "capability_disabled",
-                "capability_removed", "consent_required"].includes(code)) {
+      setChip("conflict");              // the host reloads us; boot() replays `pending`
+    } else if (saveMode === "files" && FORM_UNAVAILABLE.includes(code)) {
+      setMode("html");                  // shared publicly: save the whole page instead
+      publishing = false;
+      return publishNow();
+    } else if (READ_ONLY.includes(code) || code === "capability_disabled") {
       ART = null;
       setChip("readonly");
       showNotice("readonly");
+    } else if (code === "too_large") {
+      setChip("local");
+      showNotice("too_large");
     } else if (code === "rate_limited") {
       clearTimeout(pubTimer);
       pubTimer = setTimeout(publishNow, 6000);
@@ -853,15 +935,28 @@ function setWho(name) {
 $("#whoChip").addEventListener("click", () => openEditor("who"));
 
 /* ────────────────────────  boot  ──────────────────────── */
+function readEmbedded() {
+  const el = document.getElementById("state");
+  const raw = ((el && el.textContent) || "").trim();
+  if (!raw || raw === MARK.state) return null;
+  try {
+    const o = JSON.parse(raw);
+    return (o && typeof o === "object" && Object.keys(o).length) ? o : null;
+  } catch (e) { return null; }
+}
+
 async function boot() {
   try { setWho(localStorage.getItem(WHO_KEY) || ""); } catch (e) { setWho(""); }
   pending = readPending();
 
-  let shared = null, local = null;
-  try {
-    const res = await fetch("data/state.json", { cache: "no-store" });
-    if (res.ok) shared = await res.json();
-  } catch (e) { /* nothing published yet, or opened as a local file */ }
+  let shared = readEmbedded(), local = null;
+  if (!shared) {
+    // versions before the state moved into the page kept it in a side file
+    try {
+      const res = await fetch("data/state.json", { cache: "no-store" });
+      if (res.ok) shared = await res.json();
+    } catch (e) { /* nothing published yet, or opened as a local file */ }
+  }
   try { local = JSON.parse(localStorage.getItem(LS_KEY) || "null"); } catch (e) {}
 
   let replayed = 0;
@@ -891,6 +986,7 @@ async function boot() {
     showNotice("local");
   }
 
+  restorePlace();
   restoreDraft();
 }
 

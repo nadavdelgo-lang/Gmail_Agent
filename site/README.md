@@ -7,7 +7,7 @@ A one-page campaign site for talking a friend out of Shanghai and back to Israel
 | File | What it is |
 |---|---|
 | `index.html` | The whole site — markup, styles and app in one standalone file. Open it in a browser and it works. |
-| `artifact.html` | Generated. `index.html` with the `<!doctype>`/`<head>` wrapper stripped, for publishing as a Claude Artifact. |
+| `artifact.html` | Generated. `index.html` with the `<!doctype>`/`<head>` wrapper stripped and a base64 copy of itself packed into the `#shell` slot, for publishing as a Claude Artifact. |
 | `build-artifact.py` | Regenerates `artifact.html`. Run it after every edit to `index.html`. |
 
 Edit `index.html` only; never `artifact.html` directly.
@@ -48,12 +48,43 @@ visit.
 
 ## Where the content is stored
 
-1. **The artifact itself.** The page saves to `data/state.json` alongside it, so
-   everyone opening the link sees the same content. When anyone saves, every other
-   open copy of the page reloads onto the new version, which is what keeps several
-   editors in step.
+1. **In the page.** Everything lives in the `#state` JSON block inside the page, and
+   saving publishes a new version of the page carrying it. When anyone saves, every
+   other open copy reloads onto the new version, which is what keeps several editors
+   in step.
 2. **The browser.** Every change is mirrored to `localStorage`, which is the only
    store when the page is opened as a local file.
+
+Older versions kept the content in a `data/state.json` side file. The page still
+reads that file when its own `#state` block is empty, so nothing saved under the
+old scheme is lost.
+
+## How the page saves itself
+
+To publish a new version, a page has to hand the host a complete replacement
+document — and it must not serialise the live DOM, which by then holds viewer
+state and the host's own injected scripts. So the page carries a base64 copy of
+its own source in `#shell`, with two placeholders: `%%SHELL%%` and `%%STATE%%`.
+Saving fills the first with the shell again and the second with the current
+content, which makes every generation able to build the next one.
+`build-artifact.py` seeds that copy.
+
+There are two publish forms and the page uses whichever one works:
+
+- **Files form** (`publish({"index.html": doc})`) — leaves the saving view running,
+  so it is the one to prefer.
+- **Whole document** (`publish(doc)`) — reloads every view including the saver.
+  This is the only form available once an artifact is **shared publicly**, where the
+  files form is refused with `capability_disabled`.
+
+The page starts on the files form, switches permanently to the whole-document form
+the first time it is refused, and remembers the choice. Because the whole-document
+form reloads the saver, scroll position and the open day tab are stashed in
+`sessionStorage` and restored.
+
+`capability_disabled` therefore does **not** mean read-only — it means "try the
+other form". Only `not_writer`, `not_granted`, `not_declared`, `consent_required`
+and `capability_removed` mean the viewer cannot write.
 
 ## Two people editing at once
 
