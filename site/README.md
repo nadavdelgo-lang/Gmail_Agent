@@ -33,16 +33,42 @@ Everything is added from inside the page — there is no data file to hand-edit.
 - **From home** — notes from family and friends, Hebrew or English (each block
   sets its own direction).
 
+## Everyone can edit
+
+Every visitor gets the same add and edit controls; nothing is owner-only. Whether
+their changes reach everyone else depends on how the link was shared — from the
+artifact's share menu, **edit access** lets a visitor save for everyone, **view
+access** does not. The chip in the top bar always says which of the two a visitor
+has: *Everyone can edit* / *Saved for everyone*, or *View-only link*.
+
+A view-only visitor still keeps every control. Their edits are kept in their own
+browser and a banner explains where they landed, so nothing is silently lost — and
+if they are later given an edit link, the queued edits are sent up on their next
+visit.
+
 ## Where the content is stored
 
-Two places, in this order:
+1. **The artifact itself.** The page saves to `data/state.json` alongside it, so
+   everyone opening the link sees the same content. When anyone saves, every other
+   open copy of the page reloads onto the new version, which is what keeps several
+   editors in step.
+2. **The browser.** Every change is mirrored to `localStorage`, which is the only
+   store when the page is opened as a local file.
 
-1. **The artifact itself.** When the page runs as a published Artifact it saves to
-   `data/state.json` alongside the page, so everyone who opens the link sees the
-   same content. The chip in the top bar reads *Saved for everyone*.
-2. **The browser.** Every change is also mirrored to `localStorage`, which is the
-   only store when the page is opened as a local file. The chip then reads
-   *Saved on this device* — that copy does not reach anyone else.
+## Two people editing at once
 
-A viewer without write access sees the content with every add and edit button
-hidden, and the chip reads *Read-only view*.
+Changes are recorded as operations — *add this person*, *change this plan's time*,
+*delete this photo* — not as whole-document overwrites. Each operation is queued in
+`localStorage` until the shared copy accepts it.
+
+If someone else saves first, the save is rejected as a `conflict` and the platform
+reloads this page onto their version. On load the page replays its own queued
+operations on top of what it just received, then saves again, and shows a
+*Recovered* banner. Both people's work survives; neither overwrites the other.
+Adds carry their own id, so replaying one twice cannot duplicate it.
+
+A half-written form survives that reload too — it is kept in `sessionStorage` and
+reopened, so a long note is never lost to someone else's save.
+
+Contributors set a name once (the *Adding as…* chip in the top bar). It is stored
+in their own browser and stamped on whatever they add.

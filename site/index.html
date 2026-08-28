@@ -150,8 +150,33 @@ p{margin:0}
 }
 .icon-btn:hover{color:var(--jaffa);border-color:var(--jaffa)}
 
-/* write affordances vanish for read-only viewers */
-body[data-ro="1"] [data-write]{display:none !important}
+/* read-only viewers keep the controls; a banner explains where their edits land */
+.notice{
+  display:none;background:var(--jaffa-wash);border-bottom:1px solid var(--edge);
+  color:var(--ink);font-size:.88rem;
+}
+.notice.is-on{display:block}
+.notice__in{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;padding-block:11px}
+.notice__tag{
+  font-size:.66rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  color:#FBF8F1;background:var(--jaffa);border-radius:5px;padding:3px 8px;flex:none;
+}
+.notice p{color:var(--ink-2)}
+
+.by{
+  margin-top:12px;font-size:.72rem;font-weight:600;letter-spacing:.05em;
+  color:var(--ink-3);text-transform:uppercase;
+}
+.slot__by{font-size:.72rem;color:var(--ink-3);margin-top:5px;font-weight:600}
+
+.who{
+  display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
+  border:1px solid var(--edge);background:var(--card);border-radius:999px;
+  padding:4px 11px;font-size:.72rem;font-weight:600;color:var(--ink-2);cursor:pointer;
+}
+.who:hover{border-color:var(--sea);color:var(--sea)}
+.who b{font-weight:800;color:var(--ink)}
+@media (max-width:560px){ .who{display:none} }
 
 /* ─────────────────────────  top bar  ───────────────────────── */
 .topbar{
@@ -306,6 +331,8 @@ body[data-ro="1"] [data-write]{display:none !important}
 .grid{display:grid;gap:20px}
 .grid--3{grid-template-columns:repeat(auto-fit,minmax(268px,1fr))}
 .grid--2{grid-template-columns:repeat(auto-fit,minmax(330px,1fr))}
+.grid--3>*{max-width:520px}
+.grid--2>*{max-width:620px}
 
 .card{
   position:relative;border:1.5px solid var(--edge);border-radius:var(--r);
@@ -477,9 +504,17 @@ dialog.sheet::backdrop{background:rgba(12,18,24,.55);backdrop-filter:blur(3px)}
       <a href="#photos">Evidence</a>
       <a href="#notes">From home</a>
     </nav>
-    <span class="savechip" id="savechip" data-s="local"><span class="savechip__dot"></span><span id="savetxt">Ready</span></span>
+    <button class="who" id="whoChip" type="button">Adding as <b id="whoName">someone</b></button>
+    <span class="savechip" id="savechip" data-s="local" title="Anyone with an edit link can change this page."><span class="savechip__dot"></span><span id="savetxt">Ready</span></span>
   </div>
 </header>
+
+<div class="notice" id="notice">
+  <div class="wrap notice__in">
+    <span class="notice__tag" id="noticeTag">Heads up</span>
+    <p id="noticeTxt"></p>
+  </div>
+</div>
 
 <main>
   <!-- ───────── hero ───────── -->
@@ -494,8 +529,8 @@ dialog.sheet::backdrop{background:rgba(12,18,24,.55);backdrop-filter:blur(3px)}
         <p class="hero__sub" id="heroSub">Two years in Shanghai is a phase. This is the counter-offer: <b>fourteen days</b>, a full schedule, people worth meeting, work that would actually be interesting — and everyone back home putting it in writing.</p>
         <div class="hero__cta">
           <button class="btn btn--primary" data-jump="#itinerary">See the fourteen days</button>
-          <button class="btn" data-write data-add="notes">Add your case for him</button>
-          <button class="btn btn--ghost" id="editHero" data-write>Edit the headline</button>
+          <button class="btn" data-open="notes">Add your case for him</button>
+          <button class="btn btn--ghost" id="editHero">Edit the headline</button>
         </div>
       </div>
 
@@ -533,7 +568,7 @@ dialog.sheet::backdrop{background:rgba(12,18,24,.55);backdrop-filter:blur(3px)}
           <h2 class="sec__title">Every day is already booked.</h2>
           <p class="sec__lede">One tab per day of the trip. Add the plans as they firm up — hours, places, who is waiting where.</p>
         </div>
-        <button class="btn btn--sm" data-write id="editDayBtn">Edit this day</button>
+        <button class="btn btn--sm" id="editDayBtn">Edit this day</button>
       </div>
 
       <div class="stubs" id="stubs" role="tablist" aria-label="Days of the trip"></div>
@@ -550,7 +585,7 @@ dialog.sheet::backdrop{background:rgba(12,18,24,.55);backdrop-filter:blur(3px)}
           <h2 class="sec__title">People he really should meet.</h2>
           <p class="sec__lede">Name, Instagram, and one honest line about why they'd get along. Coffee is a low-commitment activity; moving countries is not. We start with coffee.</p>
         </div>
-        <button class="btn" data-write data-add="people">Add someone</button>
+        <button class="btn" data-open="people">Add someone</button>
       </div>
       <div class="grid grid--3" id="peopleGrid"></div>
     </div>
@@ -565,7 +600,7 @@ dialog.sheet::backdrop{background:rgba(12,18,24,.55);backdrop-filter:blur(3px)}
           <h2 class="sec__title">Work that beats another year abroad.</h2>
           <p class="sec__lede">Companies, startups, funds, open roles, anyone who said "tell him to call me". Drop them in as they come up.</p>
         </div>
-        <button class="btn" data-write data-add="ops">Add an opportunity</button>
+        <button class="btn" data-open="ops">Add an opportunity</button>
       </div>
       <div class="grid grid--2" id="opsGrid"></div>
     </div>
@@ -580,7 +615,7 @@ dialog.sheet::backdrop{background:rgba(12,18,24,.55);backdrop-filter:blur(3px)}
           <h2 class="sec__title">Music for the flight back.</h2>
           <p class="sec__lede">Paste a Spotify playlist link and it lands here.</p>
         </div>
-        <button class="btn" data-write data-add="playlists">Add a playlist</button>
+        <button class="btn" data-open="playlists">Add a playlist</button>
       </div>
       <div class="sound" id="soundGrid"></div>
     </div>
@@ -595,7 +630,7 @@ dialog.sheet::backdrop{background:rgba(12,18,24,.55);backdrop-filter:blur(3px)}
           <h2 class="sec__title">Evidence of a life he left here.</h2>
           <p class="sec__lede">Drop in photos of him. The more incriminating the better.</p>
         </div>
-        <button class="btn" data-write data-add="photos">Add photos</button>
+        <button class="btn" data-open="photos">Add photos</button>
       </div>
       <div class="roll" id="roll"></div>
     </div>
@@ -610,7 +645,7 @@ dialog.sheet::backdrop{background:rgba(12,18,24,.55);backdrop-filter:blur(3px)}
           <h2 class="sec__title">What everyone here wanted to say.</h2>
           <p class="sec__lede">Family and friends, in their own words, in whichever language they think in.</p>
         </div>
-        <button class="btn" data-write data-add="notes">Write a note</button>
+        <button class="btn" data-open="notes">Write a note</button>
       </div>
       <div class="wall" id="wall"></div>
     </div>
@@ -650,9 +685,21 @@ dialog.sheet::backdrop{background:rgba(12,18,24,.55);backdrop-filter:blur(3px)}
 (() => {
 "use strict";
 
-/* ────────────────────────  state  ──────────────────────── */
-const LS_KEY = "operation-homeward-v1";
+/* ────────────────────────  keys & helpers  ──────────────────────── */
+const LS_KEY    = "operation-homeward-v1";
+const PEND_KEY  = LS_KEY + ":pending";   // edits made but not yet published
+const WHO_KEY   = LS_KEY + ":who";       // this contributor's name
+const DRAFT_KEY = LS_KEY + ":draft";     // a half-written form, kept across reloads
+
 const uid = () => Math.random().toString(36).slice(2, 9);
+const $  = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const initials = (name) => String(name || "?").trim().split(/\s+/).slice(0, 2)
+  .map((w) => w[0]).join("").toUpperCase();
+
+const COLLS = ["people", "ops", "playlists", "photos", "notes"];
 
 const DEFAULT = () => ({
   meta: {
@@ -662,116 +709,200 @@ const DEFAULT = () => ({
     landing: "",
     updatedAt: 0
   },
-  days: Array.from({ length: 14 }, (_, i) => ({
-    id: uid(), n: i + 1, date: "", title: "", items: []
-  })),
+  days: Array.from({ length: 14 }, (_, i) => ({ id: uid(), n: i + 1, date: "", title: "", items: [] })),
   people: [], ops: [], playlists: [], photos: [], notes: []
 });
 
+function hydrate(raw) {
+  const base = DEFAULT();
+  const out = Object.assign(base, raw || {});
+  out.meta = Object.assign(base.meta, (raw && raw.meta) || {});
+  COLLS.forEach((c) => { if (!Array.isArray(out[c])) out[c] = []; });
+  if (!Array.isArray(out.days) || !out.days.length) out.days = DEFAULT().days;
+  out.days.forEach((d, i) => { if (!Array.isArray(d.items)) d.items = []; if (!d.id) d.id = uid(); d.n = d.n || i + 1; });
+  return out;
+}
+
 let STATE = DEFAULT();
-let ART = null;            // artifact capability namespace, once resolved
-let canWrite = true;       // flipped off on the first read-only rejection
+let ART = null;          // the artifact capability, once it resolves
+let pending = [];        // ops applied here but not yet accepted by the shared copy
 let activeDay = 0;
+let WHO = "";
 
-/* ────────────────────────  helpers  ──────────────────────── */
-const $  = (sel, root = document) => root.querySelector(sel);
-const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
-const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) =>
-  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-const initials = (name) => String(name || "?").trim().split(/\s+/).slice(0, 2)
-  .map((w) => w[0]).join("").toUpperCase();
+/* ────────────────────────  edits as operations  ────────────────────────
+   Every change is an operation, not a wholesale overwrite. That is what
+   lets two people edit at once: if someone else publishes first, this view
+   reloads onto their version and replays its own operations on top of it,
+   instead of clobbering them or losing its own.                        */
+function applyOp(st, o) {
+  const days = () => st.days;
+  const day = (id) => st.days.find((d) => d.id === id);
+  switch (o.t) {
+    case "add": {
+      if (!Array.isArray(st[o.c])) st[o.c] = [];
+      if (st[o.c].some((x) => x.id === o.item.id)) return;   // replay-safe
+      st[o.c].push(o.item);
+      return;
+    }
+    case "upd": { const it = (st[o.c] || []).find((x) => x.id === o.id); if (it) Object.assign(it, o.patch); return; }
+    case "del": { st[o.c] = (st[o.c] || []).filter((x) => x.id !== o.id); return; }
+    case "meta": Object.assign(st.meta, o.patch); return;
+    case "dayAdd": {
+      if (days().some((d) => d.id === o.day.id)) return;
+      days().push(Object.assign({ items: [] }, o.day));
+      days().forEach((d, i) => { d.n = i + 1; });
+      return;
+    }
+    case "dayUpd": { const d = day(o.id); if (d) Object.assign(d, o.patch); return; }
+    case "dayDel": {
+      st.days = days().filter((d) => d.id !== o.id);
+      st.days.forEach((d, i) => { d.n = i + 1; });
+      return;
+    }
+    case "slotAdd": { const d = day(o.dayId); if (d && !d.items.some((x) => x.id === o.item.id)) d.items.push(o.item); return; }
+    case "slotUpd": { const d = day(o.dayId); const it = d && d.items.find((x) => x.id === o.id); if (it) Object.assign(it, o.patch); return; }
+    case "slotDel": { const d = day(o.dayId); if (d) d.items = d.items.filter((x) => x.id !== o.id); return; }
+  }
+}
 
-function igUrl(handle) {
-  const h = String(handle || "").trim();
-  if (!h) return "";
-  if (/^https?:\/\//i.test(h)) return h;
-  return "https://instagram.com/" + h.replace(/^@/, "");
-}
-function igLabel(handle) {
-  const h = String(handle || "").trim();
-  if (!h) return "";
-  const m = h.match(/instagram\.com\/([^/?#]+)/i);
-  return "@" + (m ? m[1] : h.replace(/^@/, ""));
-}
-function spotifyEmbed(url) {
-  const m = String(url || "").match(/(playlist|album|track|artist|episode|show)\/([A-Za-z0-9]+)/);
-  return m ? `https://open.spotify.com/embed/${m[1]}/${m[2]}` : "";
-}
-function fmtDate(iso) {
-  if (!iso) return "";
-  const d = new Date(iso + "T12:00:00");
-  if (isNaN(d)) return iso;
-  return d.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+function op(o) {
+  applyOp(STATE, o);
+  pending.push(o);
+  if (pending.length > 400) pending = pending.slice(-400);
+  persist();
 }
 
-/* ────────────────────────  persistence  ──────────────────────── */
+const readPending = () => { try { return JSON.parse(localStorage.getItem(PEND_KEY) || "[]"); } catch (e) { return []; } };
+const writePending = () => { try { localStorage.setItem(PEND_KEY, JSON.stringify(pending)); } catch (e) {} };
+
+/* ────────────────────────  saving  ──────────────────────── */
 const chip = $("#savechip"), chipTxt = $("#savetxt");
 const SAVE_COPY = {
+  ready:    "Everyone can edit",
   saving:   "Saving…",
   shared:   "Saved for everyone",
   local:    "Saved on this device",
-  readonly: "Read-only view",
-  conflict: "Someone else saved first"
+  readonly: "View-only link",
+  conflict: "Someone saved first — reloading"
 };
 function setChip(s) { chip.dataset.s = s; chipTxt.textContent = SAVE_COPY[s] || s; }
 
-let pubTimer = null;
-function persist() {
-  STATE.meta.updatedAt = Date.now();
-  try { localStorage.setItem(LS_KEY, JSON.stringify(STATE)); } catch (e) { /* quota / blocked */ }
-  if (!ART || !canWrite) { setChip(canWrite ? "local" : "readonly"); return; }
-  setChip("saving");
-  clearTimeout(pubTimer);
-  pubTimer = setTimeout(async () => {
-    try {
-      await ART.publish({ "data/state.json": JSON.stringify(STATE) });
-      setChip("shared");
-    } catch (err) {
-      const code = err && err.code;
-      if (code === "conflict") { setChip("conflict"); return; }
-      if (["not_writer", "not_granted", "not_declared", "capability_disabled",
-           "capability_removed", "consent_required"].includes(code)) {
-        canWrite = false;
-        document.body.dataset.ro = "1";
-        setChip("readonly");
-        return;
-      }
-      setChip("local");
-    }
-  }, 1100);
+const NOTICE = {
+  readonly: ["View-only link",
+    "You can add and change anything here, but this link cannot save for everyone — your edits stay in this browser. Ask for an edit link and they will be sent up automatically."],
+  local: ["Not shared yet",
+    "This copy of the page saves to this browser only. Open the shared link to add things everyone can see."],
+  recovered: ["Recovered",
+    "Someone else saved while you were editing. Your changes were kept and re-applied on top of theirs."]
+};
+function showNotice(kind) {
+  const [tag, txt] = NOTICE[kind] || [];
+  if (!txt) return;
+  $("#noticeTag").textContent = tag;
+  $("#noticeTxt").textContent = txt;
+  $("#notice").classList.add("is-on");
 }
 
+let pubTimer = null, publishing = false;
+function persist() {
+  STATE.meta.updatedAt = Date.now();
+  writePending();
+  try { localStorage.setItem(LS_KEY, JSON.stringify(STATE)); } catch (e) { /* quota or blocked */ }
+  if (!ART) { setChip("local"); return; }
+  setChip("saving");
+  clearTimeout(pubTimer);
+  pubTimer = setTimeout(publishNow, 900);
+}
+
+async function publishNow() {
+  if (!ART || publishing || !pending.length) return;
+  publishing = true;
+  const sent = pending.length;
+  try {
+    await ART.publish({ "data/state.json": JSON.stringify(STATE) });
+    pending = pending.slice(sent);      // anything added mid-flight stays queued
+    writePending();
+    setChip(pending.length ? "saving" : "shared");
+    if (pending.length) { publishing = false; return publishNow(); }
+  } catch (err) {
+    const code = err && err.code;
+    if (code === "conflict") {
+      setChip("conflict");              // the shell reloads us; boot() replays `pending`
+    } else if (["not_writer", "not_granted", "not_declared", "capability_disabled",
+                "capability_removed", "consent_required"].includes(code)) {
+      ART = null;
+      setChip("readonly");
+      showNotice("readonly");
+    } else if (code === "rate_limited") {
+      clearTimeout(pubTimer);
+      pubTimer = setTimeout(publishNow, 6000);
+      setChip("saving");
+    } else {
+      setChip("local");                 // keep the queue; the next edit retries
+    }
+  }
+  publishing = false;
+}
+
+/* ────────────────────────  who is editing  ──────────────────────── */
+function setWho(name) {
+  WHO = String(name || "").trim().slice(0, 40);
+  try { WHO ? localStorage.setItem(WHO_KEY, WHO) : localStorage.removeItem(WHO_KEY); } catch (e) {}
+  $("#whoName").textContent = WHO || "someone";
+}
+$("#whoChip").addEventListener("click", () => openEditor("who"));
+
+/* ────────────────────────  boot  ──────────────────────── */
 async function boot() {
+  try { setWho(localStorage.getItem(WHO_KEY) || ""); } catch (e) { setWho(""); }
+  pending = readPending();
+
   let shared = null, local = null;
   try {
     const res = await fetch("data/state.json", { cache: "no-store" });
     if (res.ok) shared = await res.json();
-  } catch (e) { /* first run: the file does not exist yet */ }
+  } catch (e) { /* nothing published yet, or opened as a local file */ }
   try { local = JSON.parse(localStorage.getItem(LS_KEY) || "null"); } catch (e) {}
 
-  const pick = (shared && local)
-    ? ((local.meta?.updatedAt || 0) > (shared.meta?.updatedAt || 0) ? local : shared)
-    : (shared || local);
-
-  if (pick) STATE = Object.assign(DEFAULT(), pick, { meta: Object.assign(DEFAULT().meta, pick.meta || {}) });
-  if (!Array.isArray(STATE.days) || !STATE.days.length) STATE.days = DEFAULT().days;
+  let replayed = 0;
+  if (shared) {
+    STATE = hydrate(shared);
+    pending.forEach((o) => applyOp(STATE, o));
+    replayed = pending.length;
+  } else if (local) {
+    STATE = hydrate(local);
+    pending = [];                        // the local copy already holds these
+    writePending();
+  }
 
   renderAll();
   setChip(shared ? "shared" : "local");
 
   if (window.claude && typeof window.claude.use === "function") {
     ART = await window.claude.use("artifact");
-    if (ART) setChip(STATE.meta.updatedAt ? "shared" : "local");
   }
+  if (ART) {
+    setChip(pending.length ? "saving" : (shared ? "shared" : "ready"));
+    if (pending.length) {
+      if (replayed) showNotice("recovered");
+      publishNow();
+    }
+  } else if (!shared) {
+    showNotice("local");
+  }
+
+  restoreDraft();
 }
 
 /* ────────────────────────  form sheet  ──────────────────────── */
 const sheet = $("#sheet"), sheetBody = $("#sheetBody"), sheetTitle = $("#sheetTitle");
 let sheetSubmit = null;
 
+const SIGN = { k: "__by", label: "Your name", ph: "So he knows who to blame", hint: "Kept in this browser and shown on what you add." };
+
 const SCHEMAS = {
   people: {
-    add: "Add someone", edit: "Edit this person",
+    add: "Add someone", edit: "Edit this person", signed: true,
     fields: [
       { k: "name",   label: "Name", required: true, ph: "Shir" },
       { k: "handle", label: "Instagram", ph: "@shir or a full link" },
@@ -781,7 +912,7 @@ const SCHEMAS = {
     ]
   },
   ops: {
-    add: "Add an opportunity", edit: "Edit this opportunity",
+    add: "Add an opportunity", edit: "Edit this opportunity", signed: true,
     fields: [
       { k: "company", label: "Company", required: true, ph: "Wiz" },
       { k: "role",    label: "Role or opening", ph: "Backend, infra team" },
@@ -793,7 +924,7 @@ const SCHEMAS = {
     ]
   },
   playlists: {
-    add: "Add a playlist", edit: "Edit this playlist",
+    add: "Add a playlist", edit: "Edit this playlist", signed: true,
     fields: [
       { k: "title", label: "Playlist name", required: true, ph: "Songs for a one-way flight" },
       { k: "url",   label: "Spotify link", type: "url", required: true, ph: "https://open.spotify.com/playlist/…" },
@@ -801,7 +932,7 @@ const SCHEMAS = {
     ]
   },
   photos: {
-    add: "Add photos", edit: "Edit this photo",
+    add: "Add photos", edit: "Edit this photo", signed: true,
     fields: [
       { k: "src", label: "Photo", type: "image", multi: true, required: true },
       { k: "caption", label: "Caption", ph: "Eilat, 2019. He swore he would never leave." }
@@ -823,7 +954,7 @@ const SCHEMAS = {
     ]
   },
   slot: {
-    add: "Add a plan", edit: "Edit this plan",
+    add: "Add a plan", edit: "Edit this plan", signed: true,
     fields: [
       { k: "time",  label: "Time", type: "time" },
       { k: "title", label: "What is happening", required: true, ph: "Breakfast with Saba" },
@@ -838,17 +969,49 @@ const SCHEMAS = {
       { k: "heroHe",   label: "Hebrew line" },
       { k: "heroSub",  label: "Opening paragraph", type: "textarea" }
     ]
+  },
+  landing: {
+    edit: "The landing date",
+    fields: [{ k: "landing", label: "The day he lands", type: "date" }]
+  },
+  who: {
+    edit: "Who is editing",
+    fields: [{ k: "name", label: "Your name", ph: "Ronen", hint: "Kept in this browser and shown on what you add." }]
   }
 };
 
-function openSheet(kind, values, onSave, onDelete) {
+/* a half-written form survives the reload that another person's save triggers */
+let draftCtx = null;
+function stashDraft(buf) {
+  if (!draftCtx) return;
+  const light = {};
+  Object.entries(buf).forEach(([k, v]) => {
+    const big = typeof v === "string" ? v.startsWith("data:") : Array.isArray(v);
+    if (!big) light[k] = v;
+  });
+  try { sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ ctx: draftCtx, buf: light })); } catch (e) {}
+}
+const clearDraft = () => { draftCtx = null; try { sessionStorage.removeItem(DRAFT_KEY); } catch (e) {} };
+function restoreDraft() {
+  let d = null;
+  try { d = JSON.parse(sessionStorage.getItem(DRAFT_KEY) || "null"); } catch (e) {}
+  if (!d || !d.ctx || !SCHEMAS[d.ctx.kind]) return;
+  const filled = Object.values(d.buf || {}).some((v) => String(v || "").trim());
+  if (filled) openEditor(d.ctx.kind, Object.assign({}, d.ctx, { draft: d.buf }));
+  else clearDraft();
+}
+
+function buildSheet(kind, values, onSave, onDelete) {
   const schema = SCHEMAS[kind];
-  const isEdit = !!values && Object.keys(values).length > 0 && values.__editing;
-  sheetTitle.textContent = isEdit ? (schema.edit || "Edit") : (schema.add || "Add");
+  const isEdit = !!(values && values.__editing);
+  sheetTitle.textContent = isEdit ? (schema.edit || "Edit") : (schema.add || schema.edit || "Add");
   sheetBody.innerHTML = "";
   const buf = Object.assign({}, values);
+  if (schema.signed && !buf.__by) buf.__by = WHO;
 
-  schema.fields.forEach((f) => {
+  const fields = schema.signed ? schema.fields.concat([SIGN]) : schema.fields;
+
+  fields.forEach((f) => {
     const wrap = document.createElement("div");
     wrap.className = "field";
     const id = "f_" + f.k;
@@ -872,11 +1035,7 @@ function openSheet(kind, values, onSave, onDelete) {
       const showThumbs = () => {
         thumbs.innerHTML = "";
         const list = f.multi ? (buf[f.k] || []) : (buf[f.k] ? [buf[f.k]] : []);
-        list.forEach((src) => {
-          const im = document.createElement("img");
-          im.src = src; im.alt = "";
-          thumbs.appendChild(im);
-        });
+        list.forEach((src) => { const im = document.createElement("img"); im.src = src; im.alt = ""; thumbs.appendChild(im); });
       };
       const take = async (files) => {
         drop.textContent = "Working…";
@@ -894,10 +1053,7 @@ function openSheet(kind, values, onSave, onDelete) {
       input.addEventListener("change", () => take(input.files));
       drop.addEventListener("dragover", (e) => { e.preventDefault(); drop.classList.add("is-over"); });
       drop.addEventListener("dragleave", () => drop.classList.remove("is-over"));
-      drop.addEventListener("drop", (e) => {
-        e.preventDefault(); drop.classList.remove("is-over");
-        take(e.dataTransfer.files);
-      });
+      drop.addEventListener("drop", (e) => { e.preventDefault(); drop.classList.remove("is-over"); take(e.dataTransfer.files); });
       wrap.appendChild(drop);
       wrap.appendChild(thumbs);
       showThumbs();
@@ -907,11 +1063,11 @@ function openSheet(kind, values, onSave, onDelete) {
       wrap.appendChild(hint);
     } else {
       const el = document.createElement(f.type === "textarea" ? "textarea" : "input");
-      if (f.type !== "textarea") el.type = (f.type === "date" || f.type === "time" || f.type === "url") ? f.type : "text";
+      if (f.type !== "textarea") el.type = ["date", "time", "url"].includes(f.type) ? f.type : "text";
       el.id = id;
       el.value = buf[f.k] || "";
       if (f.ph) el.placeholder = f.ph;
-      el.addEventListener("input", () => { buf[f.k] = el.value; });
+      el.addEventListener("input", () => { buf[f.k] = el.value; stashDraft(buf); });
       wrap.appendChild(el);
       if (f.hint) {
         const hint = document.createElement("div");
@@ -931,22 +1087,25 @@ function openSheet(kind, values, onSave, onDelete) {
     del.className = "btn btn--ghost sheet__danger";
     del.style.marginInlineEnd = "auto";
     del.textContent = "Delete";
-    del.addEventListener("click", () => { onDelete(); sheet.close(); });
+    del.addEventListener("click", () => { onDelete(); clearDraft(); sheet.close(); });
     foot.prepend(del);
   }
 
   sheetSubmit = () => {
-    const missing = schema.fields.filter((f) => f.required &&
+    const missing = fields.filter((f) => f.required &&
       (f.multi ? !(buf[f.k] || []).length : !String(buf[f.k] || "").trim()));
     if (missing.length) {
       const el = $("#f_" + missing[0].k);
       if (el) { el.focus(); el.style.borderColor = "var(--jaffa)"; }
       return;
     }
+    if (schema.signed) setWho(buf.__by);
     onSave(buf);
+    clearDraft();
     sheet.close();
   };
   sheet.showModal();
+  stashDraft(buf);
   const first = $(".sheet__body input, .sheet__body textarea");
   if (first && first.type !== "file") first.focus();
 }
@@ -973,20 +1132,112 @@ function shrink(file, max = 1400, q = 0.72) {
 }
 
 $("#sheetSave").addEventListener("click", () => sheetSubmit && sheetSubmit());
-$("#sheetCancel").addEventListener("click", () => sheet.close());
-$("#sheetX").addEventListener("click", () => sheet.close());
+$("#sheetCancel").addEventListener("click", () => { clearDraft(); sheet.close(); });
+$("#sheetX").addEventListener("click", () => { clearDraft(); sheet.close(); });
 $("#sheetForm").addEventListener("submit", (e) => e.preventDefault());
+sheet.addEventListener("close", () => { draftCtx = null; });
+
+/* ────────────────────────  the one way in to editing  ──────────────────────── */
+function openEditor(kind, opts = {}) {
+  const { id, dayId, draft } = opts;
+  draftCtx = { kind, id, dayId };
+  const seed = (base) => Object.assign({}, base, draft || {});
+
+  if (kind === "who") {
+    draftCtx = null;
+    return buildSheet("who", { __editing: 1, name: WHO }, (v) => setWho(v.name));
+  }
+  if (kind === "hero") {
+    return buildSheet("hero", seed(Object.assign({ __editing: 1 }, STATE.meta)), (v) => {
+      op({ t: "meta", patch: { heroName: v.heroName, heroHe: v.heroHe || "", heroSub: v.heroSub || "" } });
+      renderHero();
+    });
+  }
+  if (kind === "landing") {
+    return buildSheet("landing", seed({ __editing: 1, landing: STATE.meta.landing }), (v) => {
+      op({ t: "meta", patch: { landing: v.landing || "" } });
+      renderCounter();
+    });
+  }
+  if (kind === "days") {
+    const day = STATE.days.find((d) => d.id === id);
+    if (!day) return clearDraft();
+    return buildSheet("days", seed(Object.assign({ __editing: 1 }, day)), (v) => {
+      op({ t: "dayUpd", id: day.id, patch: { date: v.date || "", title: v.title || "" } });
+      renderDays();
+    }, STATE.days.length > 1 ? () => {
+      op({ t: "dayDel", id: day.id });
+      activeDay = 0;
+      renderDays();
+    } : null);
+  }
+  if (kind === "slot") {
+    const day = STATE.days.find((d) => d.id === dayId);
+    if (!day) return clearDraft();
+    const item = id ? day.items.find((x) => x.id === id) : null;
+    return buildSheet("slot", seed(item ? Object.assign({ __editing: 1, __by: item.by || WHO }, item) : {}), (v) => {
+      const patch = { time: v.time || "", title: v.title, place: v.place || "", note: v.note || "", by: v.__by || item?.by || "" };
+      if (item) op({ t: "slotUpd", dayId: day.id, id: item.id, patch });
+      else op({ t: "slotAdd", dayId: day.id, item: Object.assign({ id: uid() }, patch) });
+      renderDays();
+    }, item ? () => { op({ t: "slotDel", dayId: day.id, id: item.id }); renderDays(); } : null);
+  }
+
+  /* the five plain collections */
+  const item = id ? STATE[kind].find((x) => x.id === id) : null;
+  const vals = item ? Object.assign({ __editing: 1, __by: item.by || WHO }, item) : {};
+  if (item && kind === "photos") vals.src = item.src ? [item.src] : [];
+
+  return buildSheet(kind, seed(vals), (v) => {
+    const by = SCHEMAS[kind].signed ? (v.__by || (item && item.by) || "") : "";
+    if (kind === "photos") {
+      if (item) {
+        op({ t: "upd", c: "photos", id: item.id,
+             patch: { src: Array.isArray(v.src) ? (v.src[v.src.length - 1] || item.src) : (v.src || item.src),
+                      caption: v.caption || "", by } });
+      } else {
+        (v.src || []).forEach((src, i) => op({ t: "add", c: "photos",
+          item: { id: uid(), src, caption: i === 0 ? (v.caption || "") : "", by } }));
+      }
+    } else if (item) {
+      const patch = Object.assign({}, v, { by });
+      delete patch.__editing; delete patch.__by;
+      op({ t: "upd", c: kind, id: item.id, patch });
+    } else {
+      const fresh = Object.assign({ id: uid() }, v, { by });
+      delete fresh.__editing; delete fresh.__by;
+      op({ t: "add", c: kind, item: fresh });
+    }
+    RENDER[kind](); renderCounter();
+  }, item ? () => { op({ t: "del", c: kind, id: item.id }); RENDER[kind](); renderCounter(); } : null);
+}
 
 /* ────────────────────────  render  ──────────────────────── */
+function igUrl(handle) {
+  const h = String(handle || "").trim();
+  if (!h) return "";
+  return /^https?:\/\//i.test(h) ? h : "https://instagram.com/" + h.replace(/^@/, "");
+}
+function igLabel(handle) {
+  const h = String(handle || "").trim();
+  if (!h) return "";
+  const m = h.match(/instagram\.com\/([^/?#]+)/i);
+  return "@" + (m ? m[1] : h.replace(/^@/, ""));
+}
+function spotifyEmbed(url) {
+  const m = String(url || "").match(/(playlist|album|track|artist|episode|show)\/([A-Za-z0-9]+)/);
+  return m ? `https://open.spotify.com/embed/${m[1]}/${m[2]}` : "";
+}
+function fmtDate(iso) {
+  if (!iso) return "";
+  const d = new Date(iso + "T12:00:00");
+  return isNaN(d) ? iso : d.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+}
+const byline = (v, cls) => v ? `<div class="${cls}">Added by ${esc(v)}</div>` : "";
+
 function renderAll() {
-  renderHero();
-  renderCounter();
-  renderDays();
-  renderPeople();
-  renderOps();
-  renderSound();
-  renderPhotos();
-  renderNotes();
+  renderHero(); renderCounter(); renderDays();
+  renderPeople(); renderOps(); renderSound(); renderPhotos(); renderNotes();
 }
 
 function renderHero() {
@@ -996,7 +1247,6 @@ function renderHero() {
 }
 
 function renderCounter() {
-  const box = $("#counter");
   const land = STATE.meta.landing;
   let lead = "—", leadLabel = "Set the landing date";
   if (land) {
@@ -1005,29 +1255,20 @@ function renderCounter() {
     leadLabel = days > 0 ? "Days until he lands" : (days === 0 ? "He lands today" : "Days since he landed");
   }
   const stat = (n, l) => `<div class="count-card"><div class="count-card__n">${n}</div><div class="count-card__l">${l}</div></div>`;
-  box.innerHTML =
+  $("#counter").innerHTML =
     `<div class="count-card count-card--lead">
        <div class="count-card__n">${lead}</div>
        <div class="count-card__l">${esc(leadLabel)}</div>
-       <button class="count-date" data-write id="setLanding">${land ? esc(fmtDate(land)) : "Pick the date"}</button>
+       <button class="count-date" data-open="landing">${land ? esc(fmtDate(land)) : "Pick the date"}</button>
      </div>` +
     stat(STATE.people.length, "People waiting") +
     stat(STATE.ops.length, "Openings on the table") +
     stat(STATE.notes.length, "Letters from home");
-
-  const btn = $("#setLanding");
-  if (btn) btn.addEventListener("click", () => {
-    openSheet("days", { __editing: 1, date: STATE.meta.landing, title: "" }, (v) => {
-      STATE.meta.landing = v.date || "";
-      persist(); renderCounter();
-    });
-  });
 }
 
-/* — itinerary — */
 function renderDays() {
   const stubs = $("#stubs");
-  activeDay = Math.min(activeDay, STATE.days.length - 1);
+  activeDay = Math.max(0, Math.min(activeDay, STATE.days.length - 1));
   stubs.innerHTML = STATE.days.map((d, i) => `
     <button class="stub" role="tab" aria-selected="${i === activeDay}" data-day="${i}" id="stub-${i}">
       <span class="stub__d">${d.date ? esc(fmtDate(d.date)) : "Day"}</span>
@@ -1035,31 +1276,30 @@ function renderDays() {
       <div class="stub__t">${d.title ? esc(d.title) : "Open"}</div>
       ${d.items.length ? `<span class="stub__c">${d.items.length}</span>` : ""}
     </button>`).join("") +
-    `<button class="stub stub--add" data-write id="addDay">+ Day</button>`;
+    `<button class="stub stub--add" id="addDay">+ Day</button>`;
 
   $$(".stub[data-day]", stubs).forEach((b) => {
     b.addEventListener("click", () => { activeDay = +b.dataset.day; renderDays(); });
     b.addEventListener("keydown", (e) => {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      e.preventDefault();
       const n = STATE.days.length;
-      if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
-        e.preventDefault();
-        activeDay = (activeDay + (e.key === "ArrowRight" ? 1 : n - 1)) % n;
-        renderDays();
-        $("#stub-" + activeDay).focus();
-      }
+      activeDay = (activeDay + (e.key === "ArrowRight" ? 1 : n - 1)) % n;
+      renderDays();
+      $("#stub-" + activeDay).focus();
     });
   });
-  const add = $("#addDay");
-  if (add) add.addEventListener("click", () => {
-    STATE.days.push({ id: uid(), n: STATE.days.length + 1, date: "", title: "", items: [] });
+  $("#addDay").addEventListener("click", () => {
+    op({ t: "dayAdd", day: { id: uid(), n: STATE.days.length + 1, date: "", title: "", items: [] } });
     activeDay = STATE.days.length - 1;
-    persist(); renderDays();
+    renderDays();
   });
 
   const day = STATE.days[activeDay];
   const panel = $("#dayPanel");
   if (!day) { panel.innerHTML = ""; return; }
   panel.setAttribute("aria-labelledby", "stub-" + activeDay);
+  panel.dataset.dayId = day.id;
 
   const slots = day.items.slice().sort((a, b) => String(a.time).localeCompare(String(b.time)));
   panel.innerHTML = `
@@ -1068,7 +1308,7 @@ function renderDays() {
         <div class="day__date">${day.date ? esc(fmtDate(day.date)) : "Day " + (day.n || activeDay + 1) + " · date to come"}</div>
         <div class="day__title">${day.title ? esc(day.title) : "Nothing locked in yet"}</div>
       </div>
-      <button class="btn btn--sm" data-write id="addSlot">+ Add a plan</button>
+      <button class="btn btn--sm" data-open="slot">+ Add a plan</button>
     </div>
     ${slots.length ? `<div class="slots">${slots.map((it) => `
       <div class="slot">
@@ -1077,61 +1317,30 @@ function renderDays() {
           <div class="slot__title" dir="auto">${esc(it.title)}</div>
           ${it.place ? `<div class="slot__place" dir="auto">${esc(it.place)}</div>` : ""}
           ${it.note ? `<div class="slot__note" dir="auto">${esc(it.note)}</div>` : ""}
+          ${byline(it.by, "slot__by")}
         </div>
-        <div class="slot__act" data-write>
-          <button class="icon-btn" data-slot-edit="${it.id}" aria-label="Edit plan">&#9998;</button>
+        <div class="slot__act">
+          <button class="icon-btn" data-open="slot" data-id="${it.id}" aria-label="Edit plan">&#9998;</button>
         </div>
       </div>`).join("")}</div>`
     : `<div class="empty" style="margin-top:22px">
          <div class="empty__t">This day is wide open.</div>
          <p>Which is either a problem or the entire point. Add the first plan.</p>
-         <button class="btn btn--primary" data-write id="addSlot2">Add a plan</button>
+         <button class="btn btn--primary" data-open="slot">Add a plan</button>
        </div>`}`;
-
-  const openSlot = (item) => openSheet("slot",
-    item ? Object.assign({ __editing: 1 }, item) : {},
-    (v) => {
-      if (item) Object.assign(item, v);
-      else day.items.push({ id: uid(), time: v.time || "", title: v.title, place: v.place || "", note: v.note || "" });
-      persist(); renderDays();
-    },
-    item ? () => { day.items = day.items.filter((x) => x.id !== item.id); persist(); renderDays(); } : null);
-
-  [$("#addSlot"), $("#addSlot2")].forEach((b) => b && b.addEventListener("click", () => openSlot(null)));
-  $$("[data-slot-edit]", panel).forEach((b) => b.addEventListener("click", () =>
-    openSlot(day.items.find((x) => x.id === b.dataset.slotEdit))));
 }
 
-$("#editDayBtn").addEventListener("click", () => {
-  const day = STATE.days[activeDay];
-  if (!day) return;
-  openSheet("days", Object.assign({ __editing: 1 }, day), (v) => {
-    day.date = v.date || ""; day.title = v.title || "";
-    persist(); renderDays();
-  }, STATE.days.length > 1 ? () => {
-    STATE.days = STATE.days.filter((d) => d.id !== day.id);
-    STATE.days.forEach((d, i) => { d.n = i + 1; });
-    activeDay = 0; persist(); renderDays();
-  } : null);
-});
+const cardActs = (kind, id) =>
+  `<div class="card__act"><button class="icon-btn" data-open="${kind}" data-id="${id}" aria-label="Edit">&#9998;</button></div>`;
 
-/* — generic list sections — */
-function cardActs(kind, id) {
-  return `<div class="card__act" data-write>
-    <button class="icon-btn" data-edit="${kind}" data-id="${id}" aria-label="Edit">&#9998;</button>
-  </div>`;
-}
-
-function emptyState(title, line, kind, cta) {
-  return `<div class="empty" style="grid-column:1/-1">
+const emptyState = (title, line, kind, cta) =>
+  `<div class="empty" style="grid-column:1/-1">
     <div class="empty__t">${esc(title)}</div><p>${esc(line)}</p>
-    <button class="btn btn--primary" data-write data-add="${kind}">${esc(cta)}</button>
+    <button class="btn btn--primary" data-open="${kind}">${esc(cta)}</button>
   </div>`;
-}
 
 function renderPeople() {
-  const g = $("#peopleGrid");
-  g.innerHTML = STATE.people.length ? STATE.people.map((p) => {
+  $("#peopleGrid").innerHTML = STATE.people.length ? STATE.people.map((p) => {
     const tags = String(p.tags || "").split(/[,·]/).map((t) => t.trim()).filter(Boolean);
     const link = igUrl(p.handle);
     return `<article class="card">
@@ -1146,6 +1355,7 @@ function renderPeople() {
       </div>
       ${p.note ? `<p class="person__note" dir="auto">${esc(p.note)}</p>` : ""}
       ${tags.length ? `<div class="tags">${tags.map((t) => `<span class="tag" dir="auto">${esc(t)}</span>`).join("")}</div>` : ""}
+      ${byline(p.by, "by")}
     </article>`;
   }).join("") : emptyState("Nobody on the list yet.",
       "Add the first name. A photo and one honest sentence go further than a whole pitch.",
@@ -1153,8 +1363,7 @@ function renderPeople() {
 }
 
 function renderOps() {
-  const g = $("#opsGrid");
-  g.innerHTML = STATE.ops.length ? STATE.ops.map((o) => `
+  $("#opsGrid").innerHTML = STATE.ops.length ? STATE.ops.map((o) => `
     <article class="card op">
       ${cardActs("ops", o.id)}
       <div class="op__top">
@@ -1171,6 +1380,7 @@ function renderOps() {
         ${o.stage ? `<span class="pill pill--olive">${esc(o.stage)}</span>` : ""}
         ${o.url ? `<a class="op__link" href="${esc(o.url)}" target="_blank" rel="noopener">Open ↗</a>` : ""}
       </div>
+      ${byline(o.by, "by")}
     </article>`).join("") : emptyState("No openings pinned yet.",
       "Companies, funds, a friend who is hiring — anything that makes staying the easier choice.",
       "ops", "Add an opportunity");
@@ -1202,11 +1412,11 @@ function renderSound() {
                      : "That link doesn't look like a Spotify playlist — the button still opens it."}</p>
           <a class="btn btn--primary" href="${esc(pl.url)}" target="_blank" rel="noopener">Play on Spotify ↗</a>
         </div>
+        ${byline(pl.by, "by")}
       </div>
     </div>`;
   }).join("");
 
-  // Show the embed only if the frame actually loads; otherwise the link stays.
   $$("iframe[data-embed]", g).forEach((f) => {
     const fb = f.parentElement.querySelector("[data-fallback]");
     f.addEventListener("load", () => { f.classList.add("is-live"); if (fb) fb.style.display = "none"; });
@@ -1218,15 +1428,16 @@ function renderPhotos() {
   g.classList.toggle("is-empty", !STATE.photos.length);
   g.innerHTML = STATE.photos.length ? STATE.photos.map((ph, i) => `
     <figure class="snap" data-photo="${i}">
-      <div class="snap__act" data-write>
-        <button class="icon-btn" data-edit="photos" data-id="${ph.id}" aria-label="Edit photo">&#9998;</button>
+      <div class="snap__act">
+        <button class="icon-btn" data-open="photos" data-id="${ph.id}" aria-label="Edit photo">&#9998;</button>
       </div>
       <img src="${ph.src}" alt="${esc(ph.caption || "")}" loading="lazy">
-      <figcaption class="snap__cap" dir="auto">${esc(ph.caption || "")}</figcaption>
+      <figcaption class="snap__cap" dir="auto">${esc(ph.caption || "")}${
+        ph.by ? `<span style="display:block;font-size:.72rem;color:var(--ink-3);margin-top:3px">${esc(ph.by)}</span>` : ""}</figcaption>
     </figure>`).join("") : `<div class="empty">
       <div class="empty__t">The wall is empty.</div>
       <p>Fill it with him: the army, the beach, the trip nobody talks about.</p>
-      <button class="btn btn--primary" data-write data-add="photos">Add photos</button>
+      <button class="btn btn--primary" data-open="photos">Add photos</button>
     </div>`;
 
   $$(".snap", g).forEach((fig) => fig.addEventListener("click", (e) => {
@@ -1243,9 +1454,7 @@ function renderNotes() {
   g.classList.toggle("is-empty", !STATE.notes.length);
   g.innerHTML = STATE.notes.length ? STATE.notes.map((n) => `
     <blockquote class="note">
-      <div class="note__act" data-write>
-        <button class="icon-btn" data-edit="notes" data-id="${n.id}" aria-label="Edit note">&#9998;</button>
-      </div>
+      <div class="note__act"><button class="icon-btn" data-open="notes" data-id="${n.id}" aria-label="Edit note">&#9998;</button></div>
       <div class="note__q" aria-hidden="true">&ldquo;</div>
       <p class="note__txt" dir="auto">${esc(n.text)}</p>
       <div class="note__by">
@@ -1255,53 +1464,22 @@ function renderNotes() {
     </blockquote>`).join("") : `<div class="empty">
       <div class="empty__t">Nobody has said their piece yet.</div>
       <p>One paragraph from the right person does more than this whole website.</p>
-      <button class="btn btn--primary" data-write data-add="notes">Write the first one</button>
+      <button class="btn btn--primary" data-open="notes">Write the first one</button>
     </div>`;
 }
 
-/* ────────────────────────  add / edit wiring  ──────────────────────── */
 const RENDER = { people: renderPeople, ops: renderOps, playlists: renderSound, photos: renderPhotos, notes: renderNotes };
 
+/* ────────────────────────  wiring  ──────────────────────── */
 document.addEventListener("click", (e) => {
-  const addBtn = e.target.closest("[data-add]");
-  if (addBtn) {
-    const kind = addBtn.dataset.add;
-    openSheet(kind, {}, (v) => {
-      if (kind === "photos") {
-        (v.src || []).forEach((src, i) => STATE.photos.push({
-          id: uid(), src, caption: (v.src.length === 1 ? (v.caption || "") : (i === 0 ? (v.caption || "") : ""))
-        }));
-      } else {
-        STATE[kind].push(Object.assign({ id: uid() }, v));
-      }
-      persist(); RENDER[kind](); renderCounter();
-    });
+  const opener = e.target.closest("[data-open]");
+  if (opener) {
+    const kind = opener.dataset.open;
+    const opts = { id: opener.dataset.id };
+    if (kind === "slot") opts.dayId = $("#dayPanel").dataset.dayId;
+    openEditor(kind, opts);
     return;
   }
-
-  const editBtn = e.target.closest("[data-edit]");
-  if (editBtn) {
-    const kind = editBtn.dataset.edit, id = editBtn.dataset.id;
-    const item = STATE[kind].find((x) => x.id === id);
-    if (!item) return;
-    const vals = Object.assign({ __editing: 1 }, item);
-    if (kind === "photos") vals.src = item.src ? [item.src] : [];
-    openSheet(kind, vals, (v) => {
-      if (kind === "photos") {
-        item.src = Array.isArray(v.src) ? (v.src[v.src.length - 1] || item.src) : v.src;
-        item.caption = v.caption || "";
-      } else {
-        Object.assign(item, v);
-        delete item.__editing;
-      }
-      persist(); RENDER[kind](); renderCounter();
-    }, () => {
-      STATE[kind] = STATE[kind].filter((x) => x.id !== id);
-      persist(); RENDER[kind](); renderCounter();
-    });
-    return;
-  }
-
   const jump = e.target.closest("[data-jump]");
   if (jump) {
     const t = document.querySelector(jump.dataset.jump);
@@ -1309,16 +1487,12 @@ document.addEventListener("click", (e) => {
   }
 });
 
-$("#editHero").addEventListener("click", () => {
-  openSheet("hero", Object.assign({ __editing: 1 }, STATE.meta), (v) => {
-    Object.assign(STATE.meta, {
-      heroName: v.heroName, heroHe: v.heroHe || "", heroSub: v.heroSub || ""
-    });
-    persist(); renderHero();
-  });
+$("#editDayBtn").addEventListener("click", () => {
+  const day = STATE.days[activeDay];
+  if (day) openEditor("days", { id: day.id });
 });
+$("#editHero").addEventListener("click", () => openEditor("hero"));
 
-/* ────────────────────────  chrome  ──────────────────────── */
 $("#lightbox").addEventListener("click", () => $("#lightbox").classList.remove("is-open"));
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") $("#lightbox").classList.remove("is-open");
@@ -1332,7 +1506,7 @@ if ("IntersectionObserver" in window) {
       links.forEach((a) => a.setAttribute("aria-current", String(a.getAttribute("href") === "#" + en.target.id)));
     });
   }, { rootMargin: "-45% 0px -50% 0px" });
-  $$("main section[id]").forEach((s) => io.observe(s));
+  $$("main section[id]").forEach((sec) => io.observe(sec));
 }
 
 boot();
