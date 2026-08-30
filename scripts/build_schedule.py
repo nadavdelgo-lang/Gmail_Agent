@@ -107,8 +107,12 @@ def purpose_for(person: dict) -> str:
         give = f" into {company}" if company else ""
         return (f"What can they give — office hours, referrals{give}, "
                 f"mentoring? And what do they need from us right now?")
-    return (f"Stay current — still{where}? What are they working on"
-            f"{f' in {domain}' if domain else ''}, and what would help?")
+    field = f" in {domain}" if domain else ""
+    if company:
+        return (f"Stay current — still at {company}? What are they working on"
+                f"{field}, and what would help?")
+    return (f"Stay current — what are they working on{field} now, and what "
+            f"would help?")
 
 
 def load_existing() -> dict[tuple[str, int], str]:
