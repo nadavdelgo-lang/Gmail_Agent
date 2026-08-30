@@ -32,6 +32,47 @@ Follow the `avishag-register` discipline. `list_drafts` first:
 
 Never stack two briefings. Two is worse than none.
 
+## Step 0 — gather what actually happened
+
+Run this before either mode. It is what stops the brief from being a
+restatement of the plan.
+
+**1. Call summaries the user wrote or was sent.** Search mail for a real
+summary — one someone typed, not a notification:
+
+```
+(from:me OR to:me) (סיכום OR summary OR "notes from" OR "call with") newer_than:10d
+```
+
+Anything that reads as an account of a conversation with an alum is a
+summary. Run it through `/call-log` first if the roster has not been updated
+from it — the brief reports what the roster knows, so the roster comes first.
+
+**2. Fireflies.** Meeting recordings live there, and the recap mail Fireflies
+sends is a link with no content in it — the body is boilerplate, so never try
+to read a summary out of the email itself. Use the connector:
+`fireflies_get_transcripts` for the window, then `fireflies_get_summary` per
+meeting.
+
+Two things to check before trusting one:
+- **`Summary Status`.** `skipped` means Fireflies generated nothing and the
+  "summary" field is empty. Say so rather than reporting silence as calm.
+- **Transcript quality.** A short meeting can come back as a handful of
+  single words — real audio was not captured. That is not a summary of
+  anything; do not extract facts from it.
+
+Match the meeting to a roster row by participant email, then by title. A
+meeting whose participants are Tinu or VelocityX counterparties is not alumni
+work — the workstream firewall in `network.yaml` applies here too.
+
+**3. The roster and the schedule.** `last_contact`, `next_action` and the
+Call Schedule's status column are the record of what was actually done.
+
+**When all three come back empty, the brief says so in one line** and reports
+the week from the schedule and the roster alone. An honest "no calls logged
+this week" is the finding; inventing activity to fill the format is the one
+thing this skill must never do.
+
 ---
 
 # Mode A — Monday briefing (§16)
