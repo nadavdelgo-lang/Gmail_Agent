@@ -1,0 +1,358 @@
+# The people table for Apex + VelocityX.
+#
+# workstreams.yaml answers "which company does this thread belong to".
+# This file answers "who are our people, and what happens next with them".
+#
+# Source of truth, same rule as everywhere else in this repo: when the network
+# skills get something wrong, fix it here rather than special-casing a skill.
+# Derived from Avishag's role definition (Nadav | APEX Talent, Alumni & Network
+# Playbook); section numbers below refer to it.
+
+roster:
+  file: config/network/roster.csv
+  count_at_seed: 97          # cohort #1 26, #2 33, #3 38 — 15/07/26 master sheet
+  identity: name             # the join key; name_he carries the Hebrew spelling
+  provenance_log: logs/roster-log.md
+  call_log_dir: logs/calls
+
+  # The single most important field. §7: "a database without a next action is
+  # just a contact list." A row whose next_action is empty is not maintained,
+  # it is only stored.
+  required_after_every_contact: [last_contact, last_source, next_action]
+
+  source_note: >
+    The seed spreadsheet graded every alum against GPU-systems / power /
+    real-time-control criteria for a hardware founding team. Those verdicts are
+    preserved verbatim in the source_note column because they are real
+    research, but they answer a different question than this role asks. Never
+    use them to rank, tier or deprioritise anyone for network work.
+
+# ---------------------------------------------------------------------------
+# TIERS — call frequency, nothing else
+# ---------------------------------------------------------------------------
+# A tier is not a judgement of who matters and never gates an introduction.
+# The matching engine ignores tier entirely: a tier-C engineer at Wiz is a
+# first-class referral path into Wiz.
+tiers:
+  A:
+    calls_per_year: 3
+    who: >
+      Founders, stealth builders, anyone at a transition point. §5's priority
+      list — the people whose situation changes fastest, so a stale row on one
+      of them is the most expensive kind of stale.
+    seeded_count: 27
+  B:
+    calls_per_year: 2
+    who: >
+      People carrying seniority or research standing. The pool that supplies
+      office hours, referrals and introductions to tier A, so what they can
+      give needs to stay current.
+    seeded_count: 38
+  C:
+    calls_per_year: 1
+    who: >
+      No verified role — the Alumni Roll-Up backlog (§9), where the first touch
+      is finding out what they actually do — plus individual contributors whose
+      situation moves slowly. An annual touch is honest. Two would be activity
+      for its own sake, which §22 names as a failure mode.
+    seeded_count: 32
+
+  promotion: >
+    Tier is a judgement call and belongs to the user. The skills propose a
+    change and never apply one — a C who turns out to be founding is surfaced
+    in the report, not silently promoted.
+
+cadence:
+  calls_per_week: 4            # §5 says 3–5; 4 is the midpoint
+  working_weeks_per_year: 46   # allows for חגים and vacation
+  call_days: [Sunday, Monday, Tuesday, Wednesday]
+  # Thursday stays free for the weekly report and overflow.
+
+  # Weeks with no calls — חגים, vacation, anything else. Listed as the Sunday
+  # that starts the week, e.g. "2026-09-13". Deliberately empty: the Hebrew
+  # calendar is not something to infer, so these are the user's to fill. Add
+  # them and re-run scripts/build_schedule.py — the rotation redistributes
+  # across the weeks that remain and keeps every status already recorded.
+  off_weeks: []
+  overdue_when: >
+    last_contact is older than (365 / tier.calls_per_year) days. This is what
+    generates §16's "very strong alum, no contact in five months" line
+    mechanically, instead of hoping someone remembers.
+
+# ---------------------------------------------------------------------------
+# WHAT EVERY CONTACT MUST SURFACE (§6)
+# ---------------------------------------------------------------------------
+# Not a questionnaire — the conversation should not feel like one. But by the
+# end of it these six should be answerable, and whatever is not stated stays
+# empty rather than being inferred.
+call_questions:
+  - key: current_goal
+    ask: "עכשיו — what is the person doing right now?"
+  - key: next_step
+    ask: "השלב הבא — where do they want to get to?"
+  - key: blocker
+    ask: "חסם — what is stopping them?"
+  - key: needs
+    ask: "אנשים — who do they need to meet?"
+  - key: can_help
+    ask: "נתינה — where can they help others?"
+  - key: apex_ask
+    ask: "APEX — what can APEX do for them, and what would they want to do with us?"
+
+# ---------------------------------------------------------------------------
+# TIE STRENGTH (§8)
+# ---------------------------------------------------------------------------
+# The goal is not to move everyone to 5. It is to know who the 5s are and look
+# after them.
+tie_strength:
+  1_known: "Acquainted. A name and a cohort, nothing more."
+  2_connected: "One meaningful interaction has happened."
+  3_engaged: "There is a live, two-way relationship."
+  4_contributor: "They are already giving value back to the network."
+  5_node: "They generate value independently and connect others themselves."
+
+# ---------------------------------------------------------------------------
+# MATCHING — how an introduction is proposed
+# ---------------------------------------------------------------------------
+# §3: "we do not do introductions for the sake of introductions. Before
+# connecting, you need to be able to answer: why do these two people need to
+# know each other now? If there is no good answer, we do not connect."
+matching:
+  max_offers_per_email: 3
+  kinds:
+    job_opportunity: >
+      The other person works somewhere this person could go, or is hiring.
+      Match on company and domain. The offer is a warm referral path, never a
+      job promise.
+    technological: >
+      The two work on the same hard problem — match on domain, plus the
+      specifics in role and notes.
+    founder_support: >
+      A founder or future founder meeting someone who has already done the
+      thing they are about to do. §5's highest-value shape.
+    office_hours: >
+      Someone on the Office Hours roster whose expertise fits a stated need.
+
+  gate:                      # every one of these must hold, or no offer ships
+    - A one-sentence answer to "why these two, why now" exists and goes in the
+      email. No answer means no offer. Zero offers is a correct outcome.
+    - Both sides' relevant fields are populated from a real source. Never
+      propose someone whose can_help is empty — that is a guess wearing a
+      fact's clothing.
+    - Nothing is asserted about the third person beyond what their roster row
+      says.
+    - The email OFFERS, it never announces. "רוצה שאחבר?" — never "חיברתי
+      אותך". The other side has not agreed yet.
+
+  contributor_load: >
+    §12 — the time of people who help us is a scarce resource and needs
+    protecting. Before proposing someone for the fourth time in a quarter, say
+    so in the report instead. Burning a generous contributor costs more than a
+    missed match.
+
+  escalate_to_avishag: >
+    §14 — an exceptional person, a founder worth pulling close, a donor or
+    strategic partner, a sensitive relationship, or an intro where her
+    connection genuinely changes the odds. Surface it as a recommendation with
+    who / why now / why her / what exactly / how long it takes. Never action it.
+
+# ---------------------------------------------------------------------------
+# INGESTION — the three doors a fact can come through
+# ---------------------------------------------------------------------------
+# One extraction contract, so the same fact lands the same way whichever door
+# it came through. /call-log and /network-sync both read this block.
+extraction:
+  state_file: config/network/sync-state.yaml
+
+  sources:
+    call_summary:
+      trust: first_hand
+      note: "The user was in the room. Facts land directly."
+    avishag_mail:
+      trust: second_hand
+      query: "(from:avishag OR to:avishag) newer_than:14d"
+      also: [team@apex.org.il]
+      note: >
+        Most alumni news arrives here relayed rather than first-hand. High
+        yield and it costs him nothing — but it is someone else's account of a
+        third party.
+    chat_export:
+      trust: first_hand_if_the_person_wrote_it
+      parser: scripts/parse_chat.py
+      note: >
+        A message the alum wrote themselves is first-hand. Someone else
+        describing them in a group is second-hand, same as mail.
+
+  capture:                   # only what maps to a roster field
+    - role or company change
+    - location move, SF especially (§11)
+    - founding, or considering founding
+    - looking for a co-founder
+    - a raise, or fundraising underway
+    - a stated need — investor, researcher, mentor, customer, compute, hire
+    - an offer to help, mentor, speak, or give office hours
+    - an ask directed at APEX
+
+  rules:
+    - Stated facts only. "דנה עוזבת את Meta" is a fact. "Dana sounded restless"
+      is not, and never becomes one.
+    - Never carry gossip, personal remarks, health, family or money matters
+      into the roster. The same rule the runner applies to chat, and harder —
+      this file gets shared.
+    - Second-hand facts are written with last_source naming the relay and the
+      date, and they generate a verification next_action. §23 is "know the
+      people deeply", not "know what someone said about them".
+    - Workstream firewall — Avishag's mail carries VelocityX deal flow, donors
+      and staff coordination. Route with workstreams.yaml; only alumni and
+      network content reaches the roster. A donor is not an alum.
+    - An unrecognised name is reported, never auto-added. Adding a person is
+      the user's call.
+    - tier and tie_strength are judgement calls: propose, never apply.
+
+  write_policy: >
+    Roster writes are applied directly and committed, one commit per sync, with
+    the diff in the report. Git is the review mechanism — a second pending
+    queue that nobody opens is worse than none. The two exceptions above (new
+    person, tier/tie_strength) are reported for a decision instead.
+
+# ---------------------------------------------------------------------------
+# STANDING PROJECTS (§9–§12)
+# ---------------------------------------------------------------------------
+projects:
+  alumni_roll_up:
+    goal: "A live picture of every alum across all cohorts (§9)."
+    backlog_at_seed: 16      # rows with no verified role
+    done_when: "Every row has role, company, current_goal and a next_action."
+
+  coffee_club:
+    goal: >
+      §10 — four alumni, one per cohort, plus Avishag and the user. Two
+      purposes: listen through them, and start turning each into an active
+      contributor. Not a nice coffee, and not called Coffee Club out loud.
+    frequency_weeks: 8
+    seats: 4
+    selection: "One per cohort; nobody repeats within the year."
+    after: "Define follow-up actions; the user owns making them happen."
+
+  sf_connection:
+    goal: >
+      §11 — turn the Valley network from something that depends on Avishag
+      into APEX infrastructure. An APEX alum landing in SF should walk into an
+      existing network, not a strange city.
+    phases:
+      1: "Map the existing circle."
+      2: "Meet the people who matter in it."
+      3: "Create value and keep the relationship warm when we need nothing."
+      4: "Extend beyond Avishag's circle."
+    also: "Put SF-bound alumni into the SF group."
+
+  office_hours:
+    goal: "§12 — 20 quality people willing to give time to APEX alumni."
+    target: 20
+    per_person_fields:
+      [expertise, role, company, location, helps_with, stage, times_per_year,
+       format, needs_intro, boundaries]
+    expertise_examples:
+      [AI Research, Fundraising, GTM, Product, Compute, Hiring, US Expansion,
+       Enterprise, Defense, Founder Coaching, Legal]
+    before_launch: >
+      §12 requires research first — how other networks run office hours and
+      above all how they prevent abuse, overload and contributor burnout.
+      Check access, matching, frequency, quality control, contributor fatigue,
+      confidentiality and follow-up, then bring a recommendation. Curated not
+      open; a specific ask, never "I'd love to pick your brain"; limited
+      frequency; reciprocity expected over time.
+
+# ---------------------------------------------------------------------------
+# REPORTING (§16–§21)
+# ---------------------------------------------------------------------------
+reporting:
+  monday_briefing:            # sent before the Weekly People Review, not in it
+    to: avishag@apex.org.il
+    subject_he: "בריפינג שבועי — אנשים"
+    sections:
+      top_people: 5
+      opportunities: 3
+      risks_weak_signals: 3
+      avishag_needed: 3
+      this_week: 5
+    formats:
+      top_people: "{name} | {cohort} | {what changed} | {what they need} | {who owns it}"
+      avishag_needed: "{who} | {why now} | {why her specifically} | {what exactly} | {how long}"
+      this_week: "{name} | {what I want to learn or achieve}"
+    note: >
+      §16 — the hour together is for people, opportunities, judgement and
+      decisions. Never for transferring information that a written briefing
+      could have carried.
+
+  thursday_report:
+    kpis:                     # week / month targets from §17
+      meaningful_alumni_calls: {week: 4, month: 15}
+      alumni_with_current_info: {week: 4, month_pct: 72}
+      quality_connections_made: {week: 3, month: 11}
+      connections_that_produced_an_outcome: {week: 1, month: 5}
+      alumni_who_helped_another_alum: {week: 2, month: 7}
+      office_hours_contributors: {week: 1, month: "12/20"}
+      new_sf_relationships: {week: 1, month: 6}
+      relationships_moved_from_avishag_to_nadav: {week: 2, month: 9}
+      things_that_genuinely_needed_avishag: {week: 2}
+    note: "Not every number rises every week. We are looking for trend and quality."
+
+    dependency_kpi: >
+      §18 — what share of the work happened without her. Report as
+      "87% handled independently | 3 raised for decision | 1 connection needed
+      Avishag". 100% is not the goal; less over time is.
+
+    funnel_kpi: >
+      §19 — Alumni → Engaged → Helped → Contributors → Nodes, counted off
+      tie_strength. Far more meaningful than "I did 17 calls".
+
+    connection_quality_kpi: >
+      §20 — not how many introductions, but what came of them: continued to a
+      second conversation, led to a collaboration, a job, a design partnership,
+      or went nowhere. This is how we learn which matching actually works.
+
+    three_lines:              # §21
+      - "מה למדתי — what did I learn about our people this week?"
+      - "מה אני ממליץ — what should APEX do about it?"
+      - "מה אני צריך מאבישג — max three. Zero is better."
+
+# ---------------------------------------------------------------------------
+# VELOCITYX BRIDGE
+# ---------------------------------------------------------------------------
+# Apex and VelocityX are run together (see workstreams.yaml). The plan does not
+# duplicate a fund operating model; it wires the one link that actually matters.
+velocityx_bridge:
+  trigger: >
+    An alum who starts a company, joins a founding team, or begins raising.
+  then:
+    - Flag it as VelocityX deal flow and propose the Affinity entry.
+    - Flag it as a §14 moment — a founder worth pulling close is exactly what
+      Avishag asked to hear about.
+    - Keep the roster row as the person's record. The fund's CRM tracks the
+      company; this file tracks the person.
+  review: "Monthly, inside the existing Weekly People Review. No new meeting."
+
+# ---------------------------------------------------------------------------
+# WHERE OUTPUT GOES
+# ---------------------------------------------------------------------------
+outputs:
+  task_list: "Velocity + Apex"     # the runner's existing list, not a new one
+  calendar: >
+    Suggest, never create — creating an event mails invitations. Every
+    suggestion also becomes a Google Task; see calendar_suggestions in
+    workstreams.yaml.
+  drafts: >
+    Gmail drafts only, never sent. Voice comes from config/voice.md and the
+    /draft skill.
+
+# ---------------------------------------------------------------------------
+# OPEN QUESTIONS — for Avishag, not to be guessed at
+# ---------------------------------------------------------------------------
+open_questions:
+  - "97 alumni in the master sheet, 82 graduates in the Canon, four cohorts in
+     the role definition but three in the sheet. Which is the real denominator
+     for the funnel KPI?"
+  - "Is there a fourth-cohort roster to merge in?"
+  - "Does Dex already hold contact details and interaction history worth
+     importing before this roster fills from scratch?"

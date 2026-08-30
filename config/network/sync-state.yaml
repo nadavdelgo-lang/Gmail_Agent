@@ -1,0 +1,21 @@
+# What /network-sync has already read.
+#
+# Each sync is a fresh session with no memory, so this file is the entire state
+# store. Read it before anything else, write it back at the end. Without it a
+# daily sync re-extracts the same fortnight of mail every day and stacks a
+# second copy of every fact it found yesterday.
+#
+# Committed on purpose: the state has to survive the session that produced it.
+
+last_mail_sweep: null      # ISO date of the last (from:avishag OR to:avishag) pass
+
+chat_exports: {}
+  # One entry per export file in the Drive folder, keyed by filename:
+  #
+  # "WhatsApp Chat with Avishag Bohbot.txt":
+  #   last_message: "2026-08-28T20:06:00"   # newest message already extracted
+  #   parsed_at: "2026-08-29T21:00:00"
+  #
+  # Re-uploading the same export is then a no-op rather than a duplicate month.
+  # A fresh export of the same chat keeps the same filename and simply carries
+  # a newer last_message — that is the intended path, not a problem.

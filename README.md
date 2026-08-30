@@ -11,8 +11,12 @@ session — no OAuth, no deployment, no credentials in the repo.
 ## Use
 
 ```
-/triage      # what needs you, ranked, grouped by company
-/draft       # write the replies, in your voice, saved as drafts
+/triage        # what needs you, ranked, grouped by company
+/draft         # write the replies, in your voice, saved as drafts
+
+/call-log      # a call summary → roster updated, follow-up drafted with real offers
+/network-sync  # Avishag's mail + WhatsApp exports → the alumni roster
+/weekly-brief  # Monday briefing to Avishag · Thursday KPI report
 ```
 
 For a full pass — triage, checkpoint, then draft the top items — ask for the
@@ -42,6 +46,28 @@ hardcode nothing.
 `config/voice.md` is the voice profile, taken from actual sent mail rather than
 invented: short, no warm-up, dash-led asides, `דלג׳ו` in Hebrew and `Delgo` in
 English, and the bare forward as a first-class move.
+
+## The Apex network
+
+Beyond mail, Nadav owns Apex's people — 97 alumni across three cohorts.
+`config/network/roster.csv` records what each of them is doing, what they need,
+where they can help others, and what happens next; `config/network/network.yaml`
+holds the rules that govern it. `plan/2026-2027/` carries the yearly plan and a
+dated rotation of 189 conversations, 3–4 a week, tiered so founders and people
+at a transition point come round three times a year and the rest less often.
+
+The loop is: call someone from today's schedule → paste the summary into
+`/call-log` → the roster updates and a follow-up draft comes back carrying up
+to three introduction offers matched from the other 96 alumni, each with a
+stated reason why those two people should meet *now*. `/network-sync` keeps the
+same roster current from Avishag's mail and from WhatsApp exports, so it does
+not depend on him remembering to write things down.
+
+Three scripts do the deterministic work: `build_roster.py` seeds the roster,
+`build_schedule.py` generates the rotation, `parse_chat.py` normalises WhatsApp
+exports (Android, iOS, Hebrew with its invisible RTL marks, and third-party
+CSVs) — the last one is under test, because a silently half-parsed export would
+write confident nonsense into the roster.
 
 ## Guarantees
 

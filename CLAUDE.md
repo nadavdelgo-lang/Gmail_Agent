@@ -19,12 +19,18 @@ section; Tinu and personal are separate.
 |---|---|
 | `config/workstreams.yaml` | Routing table: domains, people, topics, disambiguation rules, label names. Source of truth. |
 | `config/voice.md` | How the user writes, observed from real sent mail. |
+| `config/network/network.yaml` | The **people** table: tiers, call cadence, the matching gate, KPI definitions, the standing Apex projects. Source of truth. |
+| `config/network/roster.csv` | 97 Apex alumni — what each needs, can give, and what happens next. |
+| `plan/2026-2027/` | The Apex yearly plan and the dated call rotation. |
 | `.claude/skills/triage/` | `/triage` — classify and rank the inbox by workstream. |
 | `.claude/skills/draft/` | `/draft` — write replies and forwards in his voice. |
 | `.claude/agents/orchestrator.md` | Full pass: triage → checkpoint → draft. |
 | `.claude/skills/runner/` | The scheduled 8×/day pass: mail + WhatsApp exports → calendar suggestions → Google Tasks → drafts. |
 | `.claude/skills/deal-tracker/` | Standing instruction: every Ken chat, and every Amizur mail, updates the GPU Compute Deal Tracker. |
 | `.claude/skills/avishag-register/` | Weekly refresh of the task register shared with Avishag. |
+| `.claude/skills/call-log/` | `/call-log` — a call summary becomes a roster update plus a follow-up draft carrying real intro offers. |
+| `.claude/skills/network-sync/` | Daily: Avishag's mail and WhatsApp exports update the alumni roster. |
+| `.claude/skills/weekly-brief/` | The Monday briefing to Avishag and the Thursday KPI report. |
 
 ## Working rules
 
@@ -74,6 +80,29 @@ section; Tinu and personal are separate.
   triggers — the user does not ask each time. Never write a
   figure Ken did not state, and never overwrite the commercial history in
   `Value / Terms`; it is the audit trail of a live negotiation.
+- **Nadav owns Apex's people.** Alongside the mail work he runs the Apex talent
+  and alumni network: 97 alumni, 3–4 conversations a week, on a dated rotation
+  in `plan/2026-2027/call-schedule.csv`. `config/network/roster.csv` is the
+  source of truth for people — never answer "what is X doing now" from memory.
+- **Every call summary updates the roster and produces a draft.** A summary
+  pasted, uploaded or forwarded is a standing trigger for `/call-log` — the
+  user does not ask each time. The row gets a `next_action` or the call did not
+  land; §7's "a database without a next action is just a contact list".
+- **Mail with Avishag and every chat export are people sources, not just task
+  sources.** They carry most alumni news. `/network-sync` extracts it daily.
+  Parse chat exports with `scripts/parse_chat.py`, never by reading the file —
+  Hebrew exports carry invisible RTL marks that make a naive read collapse the
+  whole file into one message.
+- **Second-hand facts are labelled and verified.** Anything relayed by Avishag
+  or overheard in a group is written with its source and generates a
+  verification action. Never record it as though the user learned it himself.
+- **No introduction without a "why now".** Before proposing a connection, be
+  able to say why these two people need to know each other *now*. No answer, no
+  offer — zero offers is a correct outcome. And the email always offers, never
+  announces: "רוצה שאחבר?", never "חיברתי אותך". The other side has not agreed.
+- **Never add a person, change a tier or change a tie strength unasked.** Who
+  counts as Apex's people, and how strong a relationship is, are the user's
+  judgement calls. Propose them in the report.
 - **WhatsApp is read-only, and manual.** No API reads personal chats — not
   Meta's Business Platform, not any MCP connector. The supported path is
   WhatsApp's own "Export chat" into the Drive folder named in
