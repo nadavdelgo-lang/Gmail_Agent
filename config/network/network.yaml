@@ -68,12 +68,25 @@ cadence:
   call_days: [Sunday, Monday, Tuesday, Wednesday]
   # Thursday stays free for the weekly report and overflow.
 
-  # Weeks with no calls — חגים, vacation, anything else. Listed as the Sunday
-  # that starts the week, e.g. "2026-09-13". Deliberately empty: the Hebrew
-  # calendar is not something to infer, so these are the user's to fill. Add
-  # them and re-run scripts/build_schedule.py — the rotation redistributes
-  # across the weeks that remain and keeps every status already recorded.
-  off_weeks: []
+  # Weeks with no calls at all, listed as the Sunday that starts the week.
+  # Read off the "חגים בישראל" Google calendar rather than inferred — the
+  # Hebrew calendar is not something to guess at.
+  off_weeks:
+    - "2026-09-27"   # Sukkot — Sun–Thu all חג
+
+  # Individual days to skip inside a working week. Same source.
+  off_days:
+    - "2026-09-13"   # ראש השנה ב׳
+    - "2026-09-20"   # ערב יום כיפור
+    - "2026-09-21"   # יום כיפור
+    - "2026-10-01"   # סוכות ו׳ (Thursday, spills out of the Sukkot week)
+    - "2026-10-27"   # יום בחירות
+  # Kept as working days on purpose: צום גדליה (14/09) and סיגד (09/11) are
+  # observances, not public holidays.
+  #
+  # Only Sep–Nov 2026 is filled in. Extend it through Aug 2027 and re-run
+  # scripts/build_schedule.py — the rotation redistributes across what is left
+  # and keeps every status already recorded.
   overdue_when: >
     last_contact is older than (365 / tier.calls_per_year) days. This is what
     generates §16's "very strong alum, no contact in five months" line

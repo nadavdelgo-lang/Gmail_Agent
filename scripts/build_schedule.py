@@ -65,6 +65,17 @@ def week_starts(off_weeks: set[str]) -> list[dt.date]:
     return weeks
 
 
+def available_days(sunday: dt.date, days: list[int],
+                   off_days: set[str]) -> list[dt.date]:
+    """The days in this week a call can actually go on. Thursday is normally
+    kept clear for the weekly report, but a week broken up by חגים borrows it
+    rather than pushing someone's call out of the year."""
+    dates = [sunday + dt.timedelta(days=(d + 1) % 7) for d in days]
+    if any(d.isoformat() in off_days for d in dates):
+        dates.append(sunday + dt.timedelta(days=4))          # Thursday
+    return [d for d in dates if d.isoformat() not in off_days]
+
+
 def purpose_for(person: dict) -> str:
     """A starting objective for the call, in the shape §16 asks for — "what I
     want to learn", not "coffee with Tom". These are defaults; /call-log and
@@ -134,6 +145,7 @@ def build() -> None:
     tiers = config["tiers"]
     cadence = config["cadence"]
     off = {str(w) for w in (cadence.get("off_weeks") or [])}
+    off_days = {str(d) for d in (cadence.get("off_days") or [])}
     days = [WEEKDAY_INDEX[d] for d in cadence["call_days"]]
 
     with ROSTER.open(encoding="utf-8") as fh:
@@ -163,14 +175,24 @@ def build() -> None:
                               "ideal": ideal})
 
     # Deal them into weeks. Per-week capacity is fixed up front so the totals
-    # match exactly and no week ends up light: with 189 calls over 52 weeks,
-    # 33 weeks take 4 and 19 take 3 — all inside §5's "3–5 a week". The spare
-    # calls are spread evenly rather than bunched at the front.
+    # match exactly and no week ends up light: with 189 calls over 51 weeks,
+    # most weeks take 4 and the rest 3 — all inside §5's "3–5 a week". The
+    # spare calls are spread evenly rather than bunched at the front.
     base, extra = divmod(len(slots), n_weeks)
     capacity = [base + (1 if extra and (i * extra) % n_weeks < extra else 0)
                 for i in range(n_weeks)]
-    while sum(capacity) < len(slots):             # rounding slack
-        capacity[capacity.index(min(capacity))] += 1
+
+    # A week with a חג in it has fewer days to put calls on, so cap it there
+    # and let the surplus find another week. Without this the deal would hand a
+    # short week more people than it has days and someone would lose their call.
+    room = [len(available_days(s, days, off_days)) for s in weeks]
+    capacity = [min(c, r) for c, r in zip(capacity, room)]
+    while sum(capacity) < len(slots):              # redistribute the surplus
+        i = min((i for i in range(n_weeks) if capacity[i] < room[i]),
+                key=lambda i: capacity[i], default=None)
+        if i is None:
+            break                                  # genuinely no room anywhere
+        capacity[i] += 1
 
     load: dict[int, list[dict]] = defaultdict(list)
     for slot in sorted(slots, key=lambda s: s["ideal"]):
@@ -187,13 +209,14 @@ def build() -> None:
 
     existing = load_existing()
     rows = []
-    for week_no, monday in enumerate(weeks, start=1):
+    for week_no, sunday in enumerate(weeks, start=1):
         # Interleave cohorts inside the week so each one samples the network.
         members = sorted(load[week_no - 1],
                          key=lambda s: (s["person"]["cohort"], s["person"]["tier"]))
+        open_days = available_days(sunday, days, off_days)
         for i, slot in enumerate(members):
             p = slot["person"]
-            day = monday + dt.timedelta(days=(days[i % len(days)] + 1) % 7)
+            day = open_days[i]
             rows.append({
                 "date": day.isoformat(),
                 "weekday": day.strftime("%A"),
