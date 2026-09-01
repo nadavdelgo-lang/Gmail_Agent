@@ -3,7 +3,7 @@ mode: B (§17 + §21 Thursday report)
 to: avishag@apex.org.il
 subject: דוח שבועי · 3.9
 built: 2026-09-01
-status: Gmail draft r-7154201504254038738, created 2026-09-01, updated 2026-09-01 (rev. 1: Dolev whatsapp, Matan Shoef, Nadav Cohen, GB300 connection)
+status: Gmail draft r-7154201504254038738, created 2026-09-01, updated 2026-09-01 (rev. 2: Avichai Radovsky/Jackie Levi, David Shasha 3.9 call)
 covers: 30.8–3.9
 sources:
   - logs/roster-log.md (79 alumni updated 30.8, Dex import; 4 more 1.9)
@@ -45,6 +45,11 @@ sources:
   שני עמיתים למחזור/יחידה כמועמדי Contributor (רון זיידמן, ישראל סופר — גם
   הם לא ברוסטר עדיין), חיבור למשקיע שלו F2, וחבר עם דוקטורט ב-vision מאפל
   כמרצה פוטנציאלי. עדיין לא הפכו לחיבור בפועל.
+- **אביחי רדובסקי** (Cohort 3) הציע לחבר אותי לז׳קי לוי במטה הבינה
+  המלאכותית הלאומי, בהקשר frontier labs — ותוך כדי זה גם התברר שהוא ארכיטקט,
+  לא "Unknown" כמו שהיה רשום אצלנו.
+- **דוד שאשא** — קבענו שיחה היום (3.9) על שותפות טווח ארוך. אעדכן בתוצאה
+  בדוח הבא.
 - **+79 זה לא 79 שיחות** — יבוא חד-פעמי מ-Dex. הרוסטר עומד היום על 75
   טלפונים, 76 מיילים ו-95 תפקידים מתוך 97.
 
@@ -72,6 +77,7 @@ tie_strength עוד לא מולא לאף שורה — הוא אמור להתמל
 אותו דפוס חזר השבוע שלוש פעמים — עם דולב, עם מתן ועם נדב כהן: המידע האמיתי
 (מה הם מציעים, מי הם בכלל) יושב אצל מי שדיבר איתם אחרון, לא במערכת. עם נדב
 כהן זה אפילו יותר חד — לא ידעתי בוודאות שזה אותו נדב כהן עד שדיברת איתו.
+אותו דבר קרה עם אביחי — עד היום היה "Unknown" אצלנו.
 
 **מה אני ממליץ**
 מקום אחד, ושיהיה הרוסטר — 97 שורות שכבר מכילות טלפון, מייל, תפקיד ומיקום.
@@ -104,3 +110,13 @@ tie_strength עוד לא מולא לאף שורה — הוא אמור להתמל
 - **Matan Shoef / Nadav Cohen call dates** — not given. `last_contact` was left
   blank rather than guessed, since a wrong date breaks the cadence/risk
   detection this whole system relies on.
+- **Avichay Radovsky's role** updated from "Unknown" to "Architect" — roll-up
+  progress, told directly by Nadav (not yet confirmed via Dex/mail).
+- **Calendar-suggestion Google Tasks created** (list: Velocity + Apex):
+  "📅 David Shasha, Thu 3.9 — add to calendar?" and "📅 Anne Neuberger, אירוע
+  Pioneering — add to calendar?" (no date set on the latter — flagged in its
+  notes as an assumption that this is the same "New Pioneers" event from
+  27.8, pending confirmation). A third task — coordinating the Avichai
+  Radovsky → Jackie Levi intro — **failed**: the Zapier account hit its task
+  quota ("insufficient tasks... visit zapier.com/pricing"). Not something a
+  retry fixes; worth a look if Nadav wants that task added.

@@ -3,7 +3,7 @@ mode: A (§16 Monday/Sunday briefing)
 to: avishag@apex.org.il
 subject: בריפינג שבועי — אנשים · 6.9
 built: 2026-09-01
-status: Gmail draft r8768271639676627333, created 2026-09-01 (rev. 1: Dolev whatsapp, Matan Shoef, Nadav Cohen, GB300 connection)
+status: Gmail draft r8768271639676627333, created 2026-09-01, updated 2026-09-01 (rev. 2: Anne Neuberger, Avichai Radovsky/Jackie Levi, David Shasha 3.9 call)
 sources:
   - correspondence sweep, both addresses, newer_than:7d (29 threads)
   - plan/2026-2027/call-schedule.csv, week 1
@@ -35,8 +35,8 @@ sources:
 Insight שהוא עובד בה. זה גם סוגר ספק זיהוי שהיה פתוח אצלי לגביו | לגבש הצעה
 קונקרטית | נדב מטפל
 
-לירן מרקין | Cohort 2, Tier A | חובר לגישה ל-GB300 בפרינסטון, יחד עם גל
-וינר ואור וילדר שאינם ברוסטר שלנו | לבדוק מה יצא מזה בפועל | נדב מטפל
+דוד שאשא | Cohort 3, Tier C | קבענו שיחה ל-3.9 (יום חמישי) על שותפות
+טווח ארוך | לוודא שהשיחה התקיימה ולעדכן אותך בתוצאה | נדב מטפל
 
 **Opportunities**
 
@@ -45,15 +45,17 @@ Insight שהוא עובד בה. זה גם סוגר ספק זיהוי שהיה פ
    שלו F2, וחבר עם דוקטורט ב-vision מאפל למרצה. למה עכשיו: יעד הרבעון הוא 8
    Contributors ל-Office Hours ועדיין אין אף מועמד סגור — וההצעה פתוחה
    מדולב, Tier A, מ-16.8.
-2. **צוות ליבה של מתנדבים.** דוד שאשא, נעמה, ולהתייעץ עם דביר ובוכמן מי
-   מהמחזור הראשון והשני הופך למתנדב. שלחתי 27.8, עדיין בלי תשובה.
+2. **חיבור לז׳קי לוי, מטה הבינה המלאכותית הלאומי.** אביחי רדובסקי (Cohort 3
+   — ותוך כדי זה גילינו שהוא ארכיטקט, לא "Unknown" כמו שהיה רשום) רוצה לחבר
+   בינינו, בהקשר frontier labs. למה עכשיו: קשר ברמת המטה הלאומי הוא נדיר
+   ואביחי מציע אותו באופן פעיל.
 3. **SF.** יותם ניסים ו-Zack נחתו בארץ (שלחתי לך 31.8). למה עכשיו: את
    ב-Silicon Valley 9–15.10, ופאזות 1–2 של SF הן למפות ולפגוש — זום איתם
    לפני הנסיעה הופך אותם לצומת ולא לעוד שם ברשימה.
 
 **Risks / Weak Signals**
 
-1. **שלושה מיילים ממני אלייך בלי תשובה.** מתנדבים (27.8), SF AI (31.8),
+1. **שלושה מיילים ממני אלייך בלי תשובה.** מתנדבים — דוד שאשא, נעמה (27.8), SF AI (31.8),
    פאונדר Inception (31.8).
 2. **Technion x Apex ב-6.9.** ביקשת ב-27.8 להזיז ל-14:20, ההזמנה עדיין על
    14:30. סוגר מול נדב קמפפר.
@@ -93,10 +95,10 @@ Insight שהוא עובד בה. זה גם סוגר ספק זיהוי שהיה פ
 *Action items פתוחים*
 
 - לענות לדולב אם רוצים את החיבורים לרון, ישראל, F2 והמרצה
+- לתאם עם אביחי מתי ואיך מתחברים לז׳קי לוי
 - לבדוק את השאלון שהעברת ב-31.8
 - לסגור את Technion x Apex ל-14:20 מול נדב קמפפר
 - להירשם ל-The New Pioneers ב-8.9
-- להתייעץ עם דביר ובוכמן על צוות המתנדבים
 - סיכום מכל שיחה נכנס לרוסטר תוך 24 שעות, עם תאריך אמיתי
 
 ---
@@ -108,8 +110,10 @@ Insight שהוא עובד בה. זה גם סוגר ספק זיהוי שהיה פ
 - עדן — פאונדר שפגשתי באירוע Lux, שלב Inception [[NADAV: שם משפחה?]]
 - יותם ניסים — נחת בארץ, worth a Zoom
 - Zack — אותו הקשר
+- Anne Neuberger — ביקשת להוסיף, לפגוש באירוע Pioneering
+  [[NADAV: זה אותו "New Pioneers" ב-8.9?]]
 
-בישיבה ביום שני הייתי רוצה שנשרוף את הזמן על תמיר, על צוות המתנדבים ועל
+בישיבה ביום שני הייתי רוצה שנשרוף את הזמן על תמיר, על החיבור לז׳קי לוי ועל
 ה-denominator — כל השאר כאן ולא צריך לעבור עליו.
 
 דלג׳ו
@@ -133,3 +137,11 @@ Insight שהוא עובד בה. זה גם סוגר ספק זיהוי שהיה פ
   person; flagged in the row's notes for confirmation.
 - **Matan Shoef / Nadav Cohen call dates** — not given. `last_contact` was left
   blank rather than guessed.
+- **Avichay Radovsky's role** updated from "Unknown" to "Architect" — roll-up
+  progress, told directly by Nadav.
+- **Calendar-suggestion Google Tasks created** (list: Velocity + Apex):
+  "📅 David Shasha, Thu 3.9 — add to calendar?" and "📅 Anne Neuberger, אירוע
+  Pioneering — add to calendar?" (date left open — flagged as an assumption
+  this is the same "New Pioneers" event from 27.8). A third task — coordinate
+  the Avichai Radovsky → Jackie Levi intro — **failed**: Zapier account hit
+  its task quota ("insufficient tasks... visit zapier.com/pricing").

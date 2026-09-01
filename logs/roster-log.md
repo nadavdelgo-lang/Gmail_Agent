@@ -253,3 +253,6 @@ Never rewrite or tidy a line. A correction is a new line.
 2026-09-01 | Matan Shoef | next_action |  → Confirm the Pearl connection landed, and what the consultation covered | call (call-log)
 2026-09-01 | Nadav Cohen | next_action |  → Shape a concrete Deep Insight collaboration proposal and get back to him | call (call-log)
 2026-09-01 | Liran Markin | notes |  → GB300 Princeton access | call (call-log)
+2026-09-01 | David Shasha | next_action |  → Confirm the 3.9 call with David Shasha happened and log the outcome | told directly (call-log)
+2026-09-01 | Avichay Radovsky | role |  → Architect | told directly (call-log, roll-up)
+2026-09-01 | Avichay Radovsky | can_help |  → Offered to connect Nadav to Jackie Levi (National AI Program/מטה הבינה המלאכותית הלאומי) re: frontier labs | told directly (call-log)
