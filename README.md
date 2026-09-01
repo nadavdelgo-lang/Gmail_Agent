@@ -16,14 +16,18 @@ session — no OAuth, no deployment, no credentials in the repo.
 
 /call-log      # a call summary → roster updated, follow-up drafted with real offers
 /network-sync  # Avishag's mail + WhatsApp exports → the alumni roster
-/weekly-brief  # Monday briefing to Avishag · Thursday KPI report
+/weekly-brief  # Sunday briefing to Avishag · Thursday KPI report
 ```
 
 For a full pass — triage, checkpoint, then draft the top items — ask for the
 orchestrator agent.
 
 A Routine runs the same pass automatically eight times a day and adds two more
-outputs: suggested calendar events and Google Tasks per workstream. It also
+outputs: suggested calendar events and Google Tasks per workstream. The two
+weekly briefs to Avishag are scheduled separately, in the claude.ai Routines UI
+rather than here — a Claude Code trigger cannot attach Gmail in this
+organisation, and a brief that never becomes a draft is worthless. The prompts
+to paste are in `plan/2026-2027/routine-prompts.md`. It also
 reads WhatsApp exports dropped into a Drive folder, because commitments get
 made in chat that never reach email. Chat is read-only — the runner never
 replies into WhatsApp.

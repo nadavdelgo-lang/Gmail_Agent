@@ -30,7 +30,9 @@ section; Tinu and personal are separate.
 | `.claude/skills/avishag-register/` | Weekly refresh of the task register shared with Avishag. |
 | `.claude/skills/call-log/` | `/call-log` — a call summary becomes a roster update plus a follow-up draft carrying real intro offers. |
 | `.claude/skills/network-sync/` | Daily: Avishag's mail and WhatsApp exports update the alumni roster. |
-| `.claude/skills/weekly-brief/` | The Monday briefing to Avishag and the Thursday KPI report. |
+| `.claude/skills/weekly-brief/` | The Sunday briefing to Avishag and the Thursday KPI report. |
+| `plan/2026-2027/routine-prompts.md` | The two weekly Routines — they live in the claude.ai UI, not in this repo. |
+| `plan/2026-2027/briefs/` | Each week's briefing and report, as written. |
 
 ## Working rules
 
@@ -84,6 +86,17 @@ section; Tinu and personal are separate.
   and alumni network: 97 alumni, 3–4 conversations a week, on a dated rotation
   in `plan/2026-2027/call-schedule.csv`. `config/network/roster.csv` is the
   source of truth for people — never answer "what is X doing now" from memory.
+- **The two weekly briefs follow Avishag's templates verbatim.** §16 on Sunday,
+  §17/§21 on Thursday — same sections, same order, same caps. The structure is
+  hers; what this repo supplies is the content. And the content is built from
+  the week's correspondence on **both** her addresses
+  (`avishag@apex.org.il` and `avishag@velocityx.vc`), not from the roster
+  alone. VelocityX mail reaches a brief only when it carries a person, an
+  opportunity or a risk — a deal thread with no human in it is not a Top Person.
+- **The weekly Routines live in the claude.ai UI, not in this repo.** Attaching
+  connectors to a Claude Code trigger is blocked for this organisation, so a
+  Routine fired from here has no Gmail and would produce nothing. The prompts
+  to paste are in `plan/2026-2027/routine-prompts.md`.
 - **Every call summary updates the roster and produces a draft.** A summary
   pasted, uploaded or forwarded is a standing trigger for `/call-log` — the
   user does not ask each time. The row gets a `next_action` or the call did not
