@@ -3,7 +3,7 @@ mode: B (§17 + §21 Thursday report)
 to: avishag@apex.org.il
 subject: דוח שבועי · 3.9
 built: 2026-09-01
-status: NOT YET A GMAIL DRAFT — create_draft needs approval
+status: Gmail draft r-7154201504254038738, created 2026-09-01
 covers: 30.8–3.9
 sources:
   - logs/roster-log.md (79 alumni updated 30.8, Dex import)
