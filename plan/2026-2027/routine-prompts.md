@@ -106,3 +106,67 @@ Report back: which KPIs had real data behind them and which were dashed.
 (Thursday) were created before the connector limit was known. They fire without
 Gmail and produce nothing. Delete them so the UI Routines are the only ones
 running — two schedules for one brief is how you end up with two drafts.
+
+---
+
+# Personal — daily sleep-based schedule reorg
+
+Not an Apex/VelocityX Routine, but lives here because it hits the same wall:
+Google Calendar cannot be attached to a Claude Code trigger in this
+organisation (confirmed again on 2026-09-02 — `create_trigger` rejects the
+`connectors` parameter outright). So this one also has to be pasted into the
+**claude.ai Routines UI**, with Google Calendar attached.
+
+## What it depends on (already on the calendar)
+
+- **`SLEEP`** — a daily 00:30–01:00 marker, moved by hand each morning to
+  whatever time he actually fell asleep. Its current position is the day's
+  bedtime.
+- **`Running (sunset)`** — Mon/Wed, 19:00–20:30, fixed clock time. Sunset
+  drifts (~19:00 early Sept → ~16:50 early Nov) so this needs a manual nudge
+  every few weeks unless the routine below is extended to handle it — not
+  built yet, ask if wanted.
+- **`Running (morning)`** — Fri, 06:00–08:00. Overlaps the existing
+  `מים, אימון, שמש...` 06:00–09:00 Friday block, which already includes
+  אימון (workout) — worth folding one into the other by hand.
+
+## Daily 5 AM — Israel (`0 2 * * *` UTC while IDT/summer; becomes `0 3 * * *`
+after DST ends ~25 Oct 2026 — same caveat as the weekly-brief Routines)
+
+```
+Run the daily sleep-based schedule reorg for Nadav.
+
+1. Find today's SLEEP event on the calendar (a ~30-min block, usually early
+   morning) and read its current start time — that is last night's actual
+   bedtime, since he moves this event by hand each morning to log it.
+2. Target wake time = bedtime + 8 hours (his stated sleep goal — total sleep,
+   not time in bed).
+3. Look at today's calendar from now until end of day.
+4. If anything is scheduled before the target wake time or the day is
+   otherwise too tight because he went to sleep late, reorganize — but ONLY
+   solo events with no other attendees. Never move, resize, or delete any
+   event that has another attendee on it (a real meeting): if one of those
+   would conflict with a later wake time, leave it alone and note the
+   conflict in your report instead of touching it.
+5. Find a gap somewhere in the day — between existing meetings, per his
+   instruction to "steal" the time rather than block off a dedicated slot —
+   and add a daily strength-workout block, up to 1.5 hours total. Split it
+   into smaller chunks across separate gaps if no single gap is long enough;
+   title each "Strength workout". These are solo blocks with no attendees,
+   so create them directly (standing authorization, set 2026-09-02) — do not
+   just suggest them.
+6. Never move: the SLEEP marker itself, the Running (sunset)/Running
+   (morning) blocks, any APEX call block, or anything tied to a fixed
+   external commitment (an event with a location, a video-call link, or
+   other attendees is a strong signal it's fixed).
+7. Report back in 3-5 lines: bedtime read, target wake time, what moved (if
+   anything), where the strength workout landed, and any conflict you left
+   alone because it had other attendees.
+
+Never send calendar invitations — every event you touch here is a solo block
+already, so there is nothing to notify.
+```
+
+This is new (built 2026-09-02) and has not run yet — the first real fire will
+be the first look at whether "move other events to better times" behaves
+sensibly against a real day. Worth checking the first report closely.
