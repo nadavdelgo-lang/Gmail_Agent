@@ -399,3 +399,9 @@ Never rewrite or tidy a line. A correction is a new line.
 2026-09-02 | Gal Wiernik | next_action |  -> Check what came of the GB300 access with Liran and Or | apex sheet correction
 2026-09-02 | Gal Wiernik | notes |  -> GB300 Princeton access | apex sheet correction
 2026-09-02 | Liran Markin | notes |  -> GB300 note corrected: Gal Wiernik + Or Elias identified | apex sheet correction
+2026-09-02 | Ohad Amosy | notes |  -> flagged in chat 2.9, unexplained | weekly-brief sweep
+2026-09-02 | David Shasha | last_contact |  -> 2026-08-27 | weekly-brief sweep
+2026-09-02 | David Shasha | current_goal |  -> מחפש תפקיד הובלה בכיר בדיפ-טק early-stage (20–50 איש), בצומת אסטרטגיה / עומק טכנ | weekly-brief sweep
+2026-09-02 | David Shasha | needs |  -> חברות יעד בדיפ-טק עם technical depth ו-market pull אמיתי — אין שמות עדיין (his w | weekly-brief sweep
+2026-09-02 | David Shasha | can_help |  -> הקים והוביל ארכיטקטורת מערכת ב-Quantum Source (פיזיקה/חומרה/תוכנה/roadmap); ארגו | weekly-brief sweep
+2026-09-02 | David Shasha | next_action |  -> Send David 2-3 target deep-tech companies from the roster [[NADAV: which?]] and  | weekly-brief sweep

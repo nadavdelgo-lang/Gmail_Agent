@@ -1,122 +1,62 @@
 ---
-mode: B (§17 + §21 Thursday report)
+mode: B (§17 + §18 + §19 + §20 + §21 Thursday report) + the historical-unanswered addendum the user asked for
 to: avishag@apex.org.il
 subject: דוח שבועי · 3.9
-built: 2026-09-01
-status: Gmail draft r-7154201504254038738, created 2026-09-01, updated 2026-09-01 (rev. 2: Avichai Radovsky/Jackie Levi, David Shasha 3.9 call)
-covers: 30.8–3.9
+built: 2026-09-01 · rewritten 2026-09-02 (rev. 3 — first full-history sweep)
+status: Gmail draft r-7154201504254038738, updated in place 2026-09-02
+covers: 27.8–3.9 (week) · from 1.8 (month)
 sources:
-  - logs/roster-log.md (79 alumni updated 30.8, Dex import; 4 more 1.9)
-  - config/network/roster.csv (97 rows, tie_strength empty)
-  - correspondence sweep, both addresses
-  - Dolev Elbaz WhatsApp export, 16.8
-  - two user-reported calls (Matan Shoef, Nadav Cohen) — no date given
-  - logs/calls/ — empty
+  - every thread with Avishag on both addresses since 18.2.2026 — 201 threads, all pages read;
+    the ~30 opportunity-shaped ones read in full with get_thread
+  - WhatsApp export "Avishag Bohbot APEX" — 3,670 messages 18.2→2.9, parsed with scripts/parse_chat.py;
+    last 8 days read in full, all 47 LinkedIn profiles cross-checked against the roster
+  - the role-definition PDF (§16/§17 confirmed identical to the skill's template)
+  - Fireflies 24.8–3.9: David <> Apex 27.8 = summary skipped, 6 min captured; Shaull 25.8 = silent;
+    David x Nadav 24.8 = Tinu, not alumni
+  - config/network/roster.csv (97), logs/roster-log.md, logs/calls/ (empty)
 ---
 
-היי אבישג,
+## What changed vs rev. 2
 
-דוח ראשון. רוב השורות בטבלה עדיין ריקות — הרוטציה מתחילה 6.9, אז השבוע הזה
-הוא קו הבסיס. אבל כן קרו כמה דברים אמיתיים מחוץ לרוטציה, והם בטבלה ומתחתיה.
-לא צריך שכל המספרים יעלו כל שבוע. אנחנו מחפשים מגמה ואיכות.
+- **Meaningful calls: 3** (was 2) — David Shasha 27.8 added; the meeting is confirmed by his
+  2.9 blurb mail even though Fireflies skipped it.
+- **Quality connections: week 1 / month 4** (was 3/3) — Dandi Hardy (Lux) → Avishag on 31.8 is
+  this week's; the GB300 trio moved to the month column because the Mantissa mail dates it 22.8.
+- **Outcome: month 1** (was 0) — the GB300 access became a team (Or CEO / Gal CTO / Liran CPO).
+- **SF: 1** (was 0) — Dandi.
+- **Moved from Avishag to Nadav: week 2 / month 3** — Tamir (1.9) + the long-shot donor axis she
+  handed over on 31.8 (Nancy, Shaul, Peter Kash); Yoni's intro pending on her mail.
+- **Dependency line is now real numbers**: 6 of 13 items handled alone (46%), 7 raised, 2 genuinely
+  hers. Four of the seven she batted away in her own words — Anne Neuberger, Manny Stul, the
+  datacentre 25%, Foundation Labs. That is the week's honest finding and the "מה למדתי".
+- **מה אני צריך ממך → 3**: Founder Track scope · a 20-min Mantissa slot or a no · who are איתי and
+  אלה (she sent three names 23.8; only Yoni is being handled).
+- **New addendum**: every mail Nadav sent her since 16.8 with no reply — 17 items — sorted by what
+  it needs from her (deadline / one word / I'll close it / she owes), not by date. Bengaluru
+  delegation deadline 9.9 10:00 is the one with a clock on it.
 
-| KPI | בפועל שבוע | יעד שבוע | בפועל חודש | יעד חודש |
-|---|---|---|---|---|
-| שיחות בוגרים משמעותיות | 2 | 4 | 2 | 15 |
-| בוגרים עם מידע מעודכן במערכת | +79 | +4 | 81% | 72% |
-| חיבורים איכותיים שבוצעו | 3 | 3 | 3 | 11 |
-| חיבורים שהובילו לתוצאה | 0 | 1 | 0 | 5 |
-| בוגרים שעזרו לבוגר אחר | 0 | 2 | 0 | 7 |
-| Contributors / Office Hours | 0 | +1 | 0/20 | 12/20 |
-| קשרים חדשים ב-SF | 0 | 1 | 0 | 6 |
-| קשרים שעברו ממך אליי | 1 | 2 | 2 | 9 |
-| דברים שבאמת דרשו אותך | 2 | 2 | 2 | — |
+## Markers left for Nadav (red in the mail)
 
-מה עומד מאחורי המספרים המודגשים:
+- Ohad Amosy — "הצלחה מסחררת" in chat 2.9, deferred to the summary. What was it? If a call, the week is 4.
+- Omry Sendik — the 30-min call proposed 31.7 after "Interested in Contributing": did it happen?
+- 8200 annual event date.
 
-- **2 שיחות משמעותיות** — עם מתן שואף (הצעתי חיבור ל-Pearl והתייעצות) ועם
-  נדב כהן (הציע שיתוף פעולה עם הקרן Deep Insight שהוא עובד בה — זה גם סוגר
-  ספק זיהוי שהיה פתוח אצלי עליו). לשתיהן אין לי תאריך מדויק — מכניס אותן
-  לשבוע הזה כי זה מתי שדיווחת עליהן לי.
-- **3 חיבורים איכותיים** — לירן מרקין, גל וינר ואור וילדר חוברו לגישה
-  ל-GB300 בפרינסטון. גל וינר ואור וילדר לא ברוסטר שלנו כרגע
-  [[NADAV: לוודא שאלה אפקסים ולהוסיף]].
-- **דולב אלבז** פירט בוואטסאפ (16.8, אז לא נכנס למונה השבוע) ארבע הצעות:
-  שני עמיתים למחזור/יחידה כמועמדי Contributor (רון זיידמן, ישראל סופר — גם
-  הם לא ברוסטר עדיין), חיבור למשקיע שלו F2, וחבר עם דוקטורט ב-vision מאפל
-  כמרצה פוטנציאלי. עדיין לא הפכו לחיבור בפועל.
-- **אביחי רדובסקי** (Cohort 3) הציע לחבר אותי לז׳קי לוי במטה הבינה
-  המלאכותית הלאומי, בהקשר frontier labs — ותוך כדי זה גם התברר שהוא ארכיטקט,
-  לא "Unknown" כמו שהיה רשום אצלנו.
-- **דוד שאשא** — קבענו שיחה היום (3.9) על שותפות טווח ארוך. אעדכן בתוצאה
-  בדוח הבא.
-- **+79 זה לא 79 שיחות** — יבוא חד-פעמי מ-Dex. הרוסטר עומד היום על 75
-  טלפונים, 76 מיילים ו-95 תפקידים מתוך 97.
+## Roster effect of this sweep
 
-**תלות (§18)**
-— | 2 נושאים הועלו להחלטה | 0 חיבורים דרשו אותך
+- David Shasha: last_contact 27.8, current_goal / needs / can_help from his own blurb, next_action.
+- Ohad Amosy: note only — nothing invented.
+- No new rows. The 21 Founder Track + שמרי קהת proposal from the sheet merge still stands.
 
-אין לי עדיין מכנה אמיתי לאחוז: אין רגיסטר משימות משותף שסופר כל פריט
-שטופל השבוע. אני בונה אותו.
+## Chat contacts (47 profiles shared in-chat since Feb) — who is actually an alum
 
-**המשפך (§19)**
+Ohad Amosy, Matan Shoef, Ronen Tur, Liad Ben Uri, Ido Ben Tsion (roster) · Or Wilder (Founder
+Track, not in roster). The other 41 are donors, VCs, founders and Avishag's own network — they live
+in the addendum where they are open, and nowhere otherwise. Two phone numbers in the chat: one is
+Nadav's own (0543396363); the other (0523265351, sent by Avishag 2.8) has no name attached and
+was not written anywhere.
 
-```
-97 Alumni → 0 Engaged → 0 Helped → 0 Contributors → 0 Nodes
-```
+## Notes on the two hand-edits found in Gmail
 
-tie_strength עוד לא מולא לאף שורה — הוא אמור להתמלא משיחה ולא מניחוש,
-והשיחות מהרוטציה מתחילות 6.9. זה קו הבסיס שכל השנה נמדדת מולו.
-ה-denominator עצמו פתוח: 97 בגיליון, 117 במה ששלחתי לך ב-26.8, 82 ב-Canon.
-
-**איכות חיבורים (§20)**
-3 חיבורים בוצעו השבוע (ה-GB300), אפס עדיין הובילו לתוצאה ידועה. זנב של
-חודשיים-שלושה לפני שהמספר הזה אומר משהו — אעדכן כשיהיה.
-
-**מה למדתי**
-אותו דפוס חזר השבוע שלוש פעמים — עם דולב, עם מתן ועם נדב כהן: המידע האמיתי
-(מה הם מציעים, מי הם בכלל) יושב אצל מי שדיבר איתם אחרון, לא במערכת. עם נדב
-כהן זה אפילו יותר חד — לא ידעתי בוודאות שזה אותו נדב כהן עד שדיברת איתו.
-אותו דבר קרה עם אביחי — עד היום היה "Unknown" אצלנו.
-
-**מה אני ממליץ**
-מקום אחד, ושיהיה הרוסטר — 97 שורות שכבר מכילות טלפון, מייל, תפקיד ומיקום.
-כל שיחה נכנסת אליו תוך 24 שעות, עם תאריך אמיתי לא "השבוע". לא כלי חדש —
-הכלי כבר קיים; צריך ששנינו נשתמש בו ונתעד תאריך.
-
-**מה אני צריך ממך** — שניים
-1. איפה את מתעדת שיחות עם אפקסים היום (2 דקות)
-2. איזה מספר הוא ה-denominator: 97, 117 או 82 (דקה)
-
-דלג׳ו
-
----
-
-## Open items this revision surfaced (for Nadav, not in the mail)
-
-- **Ron Zaidman** and **Israel Sofer** (Dolev's referrals) are not in
-  `roster.csv`. Per CLAUDE.md — "never add a person unasked" — they were kept
-  out of the roster and only named in the drafts. Proposed rows, if wanted:
-  - Ron Zaidman · same cohort as Dolev (#3) · VP R&D (second such role),
-    ex-Microsoft, indie "Dopamine" agents project · linkedin.com/in/ron-zaidman
-    · +972525972552
-  - Israel Sofer · a later cohort than Dolev's · רמ״ד in a core unit, ~1yr to
-    discharge · linkedin.com/in/israel-sofer · +972549256346
-- **Gal Weiner** and **Or Wilder** (the other two GB300-Princeton connections)
-  are also not in the roster — need confirming as Apex alumni before adding.
-- **Liran Merkin vs Liran Markin** — the paste spelled it "מרקין"; the existing
-  roster row is "Liran Markin" (Cohort 2, CEO at Edwin). Treated as the same
-  person; flagged in the row's notes for confirmation.
-- **Matan Shoef / Nadav Cohen call dates** — not given. `last_contact` was left
-  blank rather than guessed, since a wrong date breaks the cadence/risk
-  detection this whole system relies on.
-- **Avichay Radovsky's role** updated from "Unknown" to "Architect" — roll-up
-  progress, told directly by Nadav (not yet confirmed via Dex/mail).
-- **Calendar-suggestion Google Tasks created** (list: Velocity + Apex):
-  "📅 David Shasha, Thu 3.9 — add to calendar?" and "📅 Anne Neuberger, אירוע
-  Pioneering — add to calendar?" (no date set on the latter — flagged in its
-  notes as an assumption that this is the same "New Pioneers" event from
-  27.8, pending confirmation). A third task — coordinating the Avichai
-  Radovsky → Jackie Levi intro — **failed**: the Zapier account hit its task
-  quota ("insufficient tasks... visit zapier.com/pricing"). Not something a
-  retry fixes; worth a look if Nadav wants that task added.
+- The Thursday draft had "תל דק " typed before "היי אבישג" — replaced by this rewrite.
+- The Sunday draft (בריפינג שבועי — אנשים · 6.9) had been emptied down to one line
+  ("לירן מרקין, גל וירניק ואור"). Left untouched — say if it should be rebuilt.
