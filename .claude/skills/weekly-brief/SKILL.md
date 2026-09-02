@@ -289,6 +289,21 @@ needs a tail before it means anything — say so until it does.
 
 ---
 
+## House style for these two mails
+
+Set by the user, and they apply to every brief from here on:
+
+- **No date references in the body.** Not "16.8", not "9.9 at 10:00". Use relative
+  time instead: "השבוע", "בימים הקרובים", "החודש". A deadline still gets flagged as
+  urgent, it just loses its number. Say the date to *him* in the chat reply so it is
+  not lost, never in the mail.
+- **No en dash or em dash.** Neither `–` nor `—`, in prose or inside a table cell.
+  Commas, colons and parentheses do the same work. The Hebrew maqaf `־` is fine.
+- **Every Apex alum's name is a hyperlink** on the name itself, pointing at the
+  `linkedin` column of their roster row. Never paste a bare URL into the sentence.
+  A name with no LinkedIn on file goes in unlinked with a `[[NADAV: ...]]` asking
+  for it, rather than being silently left plain.
+
 ## Voice
 
 Follow `config/voice.md`. Hebrew, informal-direct, feminine forms for Avishag,

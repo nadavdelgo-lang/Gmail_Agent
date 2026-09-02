@@ -1,9 +1,13 @@
 ---
 mode: B (§17 + §18 + §19 + §20 + §21 Thursday report) + the historical-unanswered addendum the user asked for
 to: avishag@apex.org.il
-subject: דוח שבועי · 3.9
+subject: דוח שבועי
 built: 2026-09-01 · rewritten 2026-09-02 (rev. 3 — first full-history sweep)
-status: Gmail draft r-7154201504254038738, updated in place 2026-09-02
+status: Gmail draft r-7154201504254038738, updated in place (rev. 4)
+formatting rules the user set for this and every future brief:
+  - no date references anywhere in the body (relative time only: "השבוע", "בימים הקרובים")
+  - no en dash or em dash; the Hebrew maqaf is fine
+  - every Apex alum name is a hyperlink on the name itself, pointing at their LinkedIn
 covers: 27.8–3.9 (week) · from 1.8 (month)
 sources:
   - every thread with Avishag on both addresses since 18.2.2026 — 201 threads, all pages read;
