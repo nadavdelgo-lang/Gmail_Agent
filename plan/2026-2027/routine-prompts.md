@@ -119,9 +119,9 @@ organisation (confirmed again on 2026-09-02 — `create_trigger` rejects the
 
 ## What it depends on (already on the calendar)
 
-- **`SLEEP`** — a daily 00:30–01:00 marker, moved by hand each morning to
-  whatever time he actually fell asleep. Its current position is the day's
-  bedtime.
+- **`SLEEP`** — a daily 11:30–12:00 marker (moved from 00:30–01:00 on
+  2026-09-02, at the user's request), moved by hand each morning to whatever
+  time he actually fell asleep. Its current position is the day's bedtime.
 - **`Running (sunset)`** — Mon/Wed, 19:00–20:30, fixed clock time. Sunset
   drifts (~19:00 early Sept → ~16:50 early Nov) so this needs a manual nudge
   every few weeks unless the routine below is extended to handle it — not
