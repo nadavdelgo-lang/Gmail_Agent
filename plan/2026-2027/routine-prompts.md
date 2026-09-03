@@ -1,174 +1,96 @@
-# The two weekly Routines
+# Scheduled tasks: state, faults and fixes
 
-Both briefs are Gmail drafts, and a Routine fired from Claude Code cannot reach
-Gmail: attaching connectors to a trigger is blocked for this organisation
-(`create_trigger` returns *"the connectors parameter is not available for this
-organization"*). A Routine created here would fire on time and produce nothing.
+Five Routines exist. They were all failing, for three unrelated reasons. This
+file is the record of what was wrong and what was done, because the failure mode
+here is quiet: a Routine reports SUCCEEDED and produces nothing.
 
-So these two live in the **claude.ai Routines UI**, where Gmail can be attached
-to the schedule. The prompts below are the whole configuration — paste them in.
+## The five
 
-| | Sunday briefing | Thursday report |
+| Routine | Cron (UTC) | State |
 |---|---|---|
-| When | Sunday 08:00 Israel | Thursday 08:00 Israel |
-| Cron (UTC) | `0 5 * * 0` | `0 5 * * 4` |
-| Session | fresh each firing | fresh each firing |
-| Connectors | **Gmail**, Google Calendar, Fireflies | **Gmail**, Fireflies |
+| Sunday briefing to Avishag | `0 5 * * 0` | enabled, branch fix applied |
+| Thursday weekly report | `0 5 * * 4` | enabled, branch fix applied |
+| Avishag task register | `0 6 * * 0` | re-enabled, moved off the 05:00 collision |
+| Inbox + chat runner, 8x daily | `0 1,4,7,10,13,16,19,23 * * *` | re-enabled |
+| Daily Spanish content refresh | `30 6 * * *` | enabled, still broken, see below |
 
-Israel is UTC+3 in summer and UTC+2 in winter, so `0 5` is 08:00 from late
-March to late October and 07:00 the rest of the year. If the winter hour
-matters, run two Routines and disable the one that is out of season — the UI
-has no timezone field.
+## Fault 1: the Routines fired against a branch that has none of the inputs
 
----
+**The big one.** The repo's default branch is
+`claude/multi-company-orchestrator-agent-wbahy5`. A scheduled session clones the
+default branch. That branch does **not** contain:
 
-## Sunday 08:00 — the week ahead (§16)
+- `.claude/skills/weekly-brief/SKILL.md`
+- `config/network/network.yaml`
+- `config/network/roster.csv`
+- `plan/2026-2027/call-schedule.csv`
 
-```
-Run the /weekly-brief skill in Mode A — the Sunday briefing to Avishag for the
-week starting today.
+All of it lives on `claude/apex-velocity-yearly-plan-tv5ru8`, 16 commits ahead
+and never merged. So the Thursday report fired on schedule, was told "read these
+first, they are the source of truth, never work from memory", found none of
+them, and ended two minutes later having written nothing. The run is recorded as
+SUCCEEDED, because the session did not crash. Nothing was committed, no file
+appeared in `logs/briefs/`, no draft was created.
 
-Repo: nadavdelgo-lang/gmail_agent, branch claude/apex-velocity-yearly-plan-tv5ru8.
-Read .claude/skills/weekly-brief/SKILL.md first and follow it exactly; it is the
-specification, not a suggestion.
+**Fix applied:** both weekly prompts now begin with a fetch and checkout of the
+feature branch, then verify `config/network/roster.csv` has 97 rows and STOP if
+it does not, rather than improvising a report to Avishag from memory.
 
-Do Step 0 in full before writing anything:
-1. Sweep the week's correspondence across BOTH of Avishag's addresses —
-   (from:avishag@apex.org.il OR to:avishag@apex.org.il OR
-    from:avishag@velocityx.vc OR to:avishag@velocityx.vc) newer_than:7d -in:draft
-   plus anything from team@apex.org.il that assigns either of them something.
-   Read every thread in full with get_thread — search previews hide the newest
-   message, which is usually the one that matters.
-2. Call summaries: (from:me OR to:me) (סיכום OR summary OR "notes from" OR
-   "call with") newer_than:10d
-3. Fireflies for the window — check Summary Status before trusting a summary.
-4. config/network/roster.csv, plan/2026-2027/call-schedule.csv,
-   logs/roster-log.md, logs/calls/
-5. The register draft, subject אפקס + Velocity — כל המשימות בינינו במקום אחד
+**The better fix, which needs Nadav's say-so:** merge
+`claude/apex-velocity-yearly-plan-tv5ru8` into the default branch, or make it the
+default. Then no prompt needs to know about branches at all. Pushing to another
+branch is outside what this session was authorised to do, so it was not done.
 
-Then write the briefing with exactly these sections and caps: Top People (≤5),
-Opportunities (≤3), Risks / Weak Signals (≤3), מה אני צריך ממך (≤3, ideally 0),
-השבוע. Pipe format for Top People. Every Avishag item carries all five parts:
-מי · למה עכשיו · למה דווקא היא · מה בדיוק · כמה זמן. Risks are computed from
-last_contact against tier cadence, not remembered.
+## Fault 2: two Routines were simply switched off
 
-Hebrew, informal-direct, feminine forms, signs דלג׳ו — config/voice.md.
+The runner (8x daily) and the Avishag register were both paused, with no
+`ended_reason` and no `suspension_reason`, which means a person paused them
+rather than the system disabling them. The runner had not fired since its last
+successful run in late August; the register had never fired at all.
 
-list_drafts first: update this week's draft in place if it exists, create it if
-not. Never stack two. Draft only — do not send.
+**Fix applied:** both re-enabled. The register was also moved from 05:00 to 06:00
+UTC, because it shared 05:00 Sunday with the Sunday briefing and the two would
+have raced each other for the same mailbox.
 
-Report back: which threads fed which section, and anything you left out and why.
-```
+Worth knowing: the runner fires **eight times a day with push notifications on**.
+If that is why it was paused, turn notifications off or cut the cron down rather
+than pausing it again.
 
----
+## Fault 3: the Spanish refresh hangs, and this is NOT fixed
 
-## Thursday 08:00 — the week's numbers (§17, §21)
+It fired on schedule and was fired again manually as a diagnostic. Both runs sat
+at `ROUTINE_RUN_STATUS_PENDING` and never finished, and the calendar event was
+never touched: its `updated` timestamp is still from the last manual edit. So
+this Routine has been silently doing nothing since it was created.
 
-```
-Run the /weekly-brief skill in Mode B — the Thursday report to Avishag.
+Two candidate causes, not distinguished yet:
+- the session has no Google Calendar connector and hangs rather than erroring, or
+- the session hangs for an unrelated reason before reaching the calendar.
 
-Repo: nadavdelgo-lang/gmail_agent, branch claude/apex-velocity-yearly-plan-tv5ru8.
-Read .claude/skills/weekly-brief/SKILL.md first and follow it exactly.
+Note that `create_trigger` refuses the `connectors` parameter outright for this
+organisation, so a Routine created from Claude Code cannot be given connectors at
+creation time. Whether a fired session inherits any is unproven either way.
 
-Do Step 0 in full — the same correspondence sweep across both of Avishag's
-addresses, call summaries, Fireflies, the roster and the call log.
+**Next step:** recreate it in the claude.ai Routines UI with Google Calendar
+attached. If it works there, connectors are the answer and the two weekly briefs
+should move to the UI as well.
 
-Then the nine-row KPI table in this order, targets read from
-config/network/network.yaml → reporting.thursday_report.kpis:
-שיחות בוגרים משמעותיות · בוגרים עם מידע מעודכן במערכת · חיבורים איכותיים
-שבוצעו · חיבורים שהובילו לתוצאה · בוגרים שעזרו לבוגר אחר · Contributors /
-Office Hours · קשרים חדשים ב-SF · קשרים שעברו מאבישג לנדב · דברים שבאמת
-דרשו את אבישג.
+## If the briefs need to move to the UI
 
-Count every actual from the data. A number you cannot source is a dash and a
-one-line explanation — never an estimate. This mail goes to the person the
-numbers are about.
+Both weekly prompts are stored on the Routines themselves and can be copied out
+of `list_triggers`. Attach **Gmail** and **Fireflies** (plus Google Calendar for
+the Sunday one), keep the same cron, fresh session per firing.
 
-Then §18 dependency, §19 funnel off tie_strength, §20 connection quality, and
-§21's three lines: מה למדתי · מה אני ממליץ · מה אני צריך מאבישג.
+Israel is UTC+3 in summer and UTC+2 in winter, so `0 5` is 08:00 local from late
+March to late October and 07:00 the rest of the year. The UI has no timezone
+field; if the winter hour matters, run two Routines and disable the out-of-season
+one.
 
-Carry the framing every week: לא צריך שכל המספרים יעלו כל שבוע. אנחנו מחפשים
-מגמה ואיכות.
+## How to tell whether a run actually did anything
 
-Hebrew, informal-direct, feminine forms, signs דלג׳ו — config/voice.md.
+Do not trust SUCCEEDED. Check the artefact instead:
 
-list_drafts first: update this week's draft in place if it exists. Draft only —
-do not send.
-
-Report back: which KPIs had real data behind them and which were dashed.
-```
-
----
-
-## If the two Claude Code Routines still exist
-
-`trig_01Uu11zHda7UFY6HoPRMMqaV` (Sunday) and `trig_01QodELhUzm9Fm17NcMm3Yiw`
-(Thursday) were created before the connector limit was known. They fire without
-Gmail and produce nothing. Delete them so the UI Routines are the only ones
-running — two schedules for one brief is how you end up with two drafts.
-
----
-
-# Personal — daily sleep-based schedule reorg
-
-Not an Apex/VelocityX Routine, but lives here because it hits the same wall:
-Google Calendar cannot be attached to a Claude Code trigger in this
-organisation (confirmed again on 2026-09-02 — `create_trigger` rejects the
-`connectors` parameter outright). So this one also has to be pasted into the
-**claude.ai Routines UI**, with Google Calendar attached.
-
-## What it depends on (already on the calendar)
-
-- **`SLEEP`** — a daily 23:30–00:00 marker (moved from 00:30–01:00 on
-  2026-09-02, at the user's request), moved by hand each night to whatever
-  time he actually falls asleep. Its current position is the day's bedtime —
-  note it now starts the evening *before* the date it reads for, so the 5 AM
-  routine should look at last night's instance, not today's.
-- **`Running (sunset)`** — Mon/Wed, 19:00–20:30, fixed clock time. Sunset
-  drifts (~19:00 early Sept → ~16:50 early Nov) so this needs a manual nudge
-  every few weeks unless the routine below is extended to handle it — not
-  built yet, ask if wanted.
-- **`Running (morning)`** — Fri, 06:00–08:00. Overlaps the existing
-  `מים, אימון, שמש...` 06:00–09:00 Friday block, which already includes
-  אימון (workout) — worth folding one into the other by hand.
-
-## Daily 5 AM — Israel (`0 2 * * *` UTC while IDT/summer; becomes `0 3 * * *`
-after DST ends ~25 Oct 2026 — same caveat as the weekly-brief Routines)
-
-```
-Run the daily sleep-based schedule reorg for Nadav.
-
-1. Find today's SLEEP event on the calendar (a ~30-min block, usually early
-   morning) and read its current start time — that is last night's actual
-   bedtime, since he moves this event by hand each morning to log it.
-2. Target wake time = bedtime + 8 hours (his stated sleep goal — total sleep,
-   not time in bed).
-3. Look at today's calendar from now until end of day.
-4. If anything is scheduled before the target wake time or the day is
-   otherwise too tight because he went to sleep late, reorganize — but ONLY
-   solo events with no other attendees. Never move, resize, or delete any
-   event that has another attendee on it (a real meeting): if one of those
-   would conflict with a later wake time, leave it alone and note the
-   conflict in your report instead of touching it.
-5. Find a gap somewhere in the day — between existing meetings, per his
-   instruction to "steal" the time rather than block off a dedicated slot —
-   and add a daily strength-workout block, up to 1.5 hours total. Split it
-   into smaller chunks across separate gaps if no single gap is long enough;
-   title each "Strength workout". These are solo blocks with no attendees,
-   so create them directly (standing authorization, set 2026-09-02) — do not
-   just suggest them.
-6. Never move: the SLEEP marker itself, the Running (sunset)/Running
-   (morning) blocks, any APEX call block, or anything tied to a fixed
-   external commitment (an event with a location, a video-call link, or
-   other attendees is a strong signal it's fixed).
-7. Report back in 3-5 lines: bedtime read, target wake time, what moved (if
-   anything), where the strength workout landed, and any conflict you left
-   alone because it had other attendees.
-
-Never send calendar invitations — every event you touch here is a solo block
-already, so there is nothing to notify.
-```
-
-This is new (built 2026-09-02) and has not run yet — the first real fire will
-be the first look at whether "move other events to better times" behaves
-sensibly against a real day. Worth checking the first report closely.
+- weekly briefs: a Gmail draft updated, or a file in `logs/briefs/` and a commit
+- register: the register draft's timestamp moved
+- runner: `Runner/Handled` labels applied, or an honest "nothing new" report
+- Spanish: the calendar event's `updated` timestamp is today
