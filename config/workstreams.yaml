@@ -311,3 +311,49 @@ labels:
   # it breaks every future run.
   personal: IMPORTANT
   # "Apex" (Label_9131845736770565248) predates this setup and is left alone.
+
+# ---------------------------------------------------------------------------
+# AUTO-REPLY — correspondents the runner ALWAYS drafts for, unprompted
+# ---------------------------------------------------------------------------
+# The normal gate is `is:important newer_than:1d`. Avishag is the highest-volume
+# correspondent across both companies and her mail is not reliably flagged
+# important by Gmail, so she gets her own lane that ignores `is:important` and
+# uses a wider window. Without this, her threads sit unanswered between runs —
+# which is exactly what happened through August.
+auto_reply:
+  always_draft:
+    - name: Avishag Bohbot
+      addresses: [avishag@apex.org.il, avishag@velocityx.vc]
+      window: 3d              # wider than the main gate; the label stops repeats
+      require_important: false
+      note: >
+        Every thread where her message is the newest and no draft already sits
+        on it gets a draft. Route Apex vs VelocityX on content, never on which
+        address she used. She writes Hebrew — reply in Hebrew, sign דלג׳ו.
+  # These still apply, without exception:
+  #   - never send; drafts only
+  #   - never stack a second draft on a thread that already has one
+  #   - never invent a date, figure or commitment — use [[NADAV: ...]]
+  #   - a thread where SHE is waiting on HIM gets a draft; a thread where HE is
+  #     waiting on HER does not (nothing to say yet)
+
+# ---------------------------------------------------------------------------
+# LABELLING — every triaged thread gets its workstream tag, no exceptions
+# ---------------------------------------------------------------------------
+labelling:
+  mandatory: true
+  rule: >
+    Every thread the runner reads gets its workstream label before the run ends
+    — not only the ones that produced a draft or a task. A thread classified as
+    noise still gets labelled and still gets Runner/Handled, otherwise the next
+    run re-reads it forever.
+  mapping:
+    apex_velocityx: "Velocity + Apex"   # Label_2
+    tinu: "Tinu"                        # Label_3
+    personal: IMPORTANT                 # no label of its own, by design
+    handled: "Runner/Handled"           # Label_5 — the state store
+  never:
+    - Never mark a newsletter or notification IMPORTANT to "label" it as
+      personal. Leave it unlabelled and mark it Runner/Handled only.
+    - Never apply both workstream labels to one thread. Pick one; if it is
+      genuinely both, it is Velocity + Apex.

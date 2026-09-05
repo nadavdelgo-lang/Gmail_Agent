@@ -46,6 +46,16 @@ section; Tinu and personal are separate.
 - **Two labels, not four.** `Velocity + Apex` and `Tinu`. Personal threads are
   marked IMPORTANT instead. Never mark a newsletter important — `is:important`
   is what scopes every triage run, and polluting it breaks the next one.
+- **Label everything you read, every run.** Not only the threads that produced a
+  draft or a task — a thread read and left unlabelled gets re-read from scratch
+  next pass. Noise gets `Runner/Handled` with no workstream label. See
+  `labelling` in `workstreams.yaml`.
+- **Avishag is drafted for automatically.** She has her own lane in the runner
+  gate (`auto_reply` in the config) that drops `is:important` and widens to 3
+  days, because Gmail does not reliably flag her mail important and the general
+  gate misses most of it. Every thread where her message is the newest and no
+  draft exists gets one, unprompted — the user does not ask each time. The one
+  exception is a thread where *he* is waiting on *her*: nothing to say yet.
 - **Hardware topics are Tinu** wherever they come from, including Hebrew mail
   from consumer addresses (Amizur Kafri on the buildout).
 - **The runner has no memory between runs.** A fresh session fires each time,

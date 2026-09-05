@@ -43,6 +43,11 @@ live thread with a funder is worse than a missed one.
 
 ## Step 1 — candidate set
 
+Two lanes, both run every pass. Lane B is not optional and does not depend on
+lane A finding anything.
+
+**Lane A — the general gate:**
+
 ```
 in:inbox is:important newer_than:1d -label:Runner/Handled
 ```
@@ -51,9 +56,27 @@ One day of overlap with the label as the real filter, so nothing slips through
 a gap between runs and nothing gets handled twice. Never widen to `is:unread` —
 tens of thousands of threads sit unread and that is not a work queue.
 
-If the set is empty, still check chat sources (step 2b), then stop. Report
-"nothing new" and do nothing else. A quiet run is a correct run — do not go
-looking for work to justify the pass. At eight runs a day, most will be quiet.
+**Lane B — the always-draft correspondents** (`auto_reply` in the config):
+
+```
+(from:avishag@apex.org.il OR from:avishag@velocityx.vc) newer_than:3d -label:Runner/Handled
+```
+
+Note what is **absent**: no `is:important`. Gmail does not reliably flag
+Avishag's mail as important, so the general gate misses most of it — that is
+why her threads sat unanswered through August while the runner reported "quiet"
+eight times a day. Lane B exists to close exactly that hole. Run it every pass,
+even when lane A is empty, and never add `is:important` back to it.
+
+Read every lane-B thread in full with `get_thread` before judging it. Search
+previews show only the ~5 **oldest** messages and give no truncation marker, so
+a thread that looks open in the preview may already be closed, and one that
+looks handled may have a newer message waiting.
+
+If **both** lanes are empty, still check chat sources (step 2b), then stop.
+Report "nothing new" and do nothing else. A quiet run is a correct run — do not
+go looking for work to justify the pass. Most runs will still be quiet; the
+difference is that a quiet run now means quiet, rather than unread Avishag mail.
 
 ## Step 2 — triage
 
@@ -165,10 +188,49 @@ that needs rewriting is worse than none.
 - Never invent a figure, date or commitment. Use `[[NADAV: ...]]` markers.
 - **Cap: five drafts per run**, highest-ranked first.
 
+**Lane B is drafted first, before the cap is spent on anything else.** Every
+`auto_reply` thread where her message is the newest and no draft already sits on
+that `threadId` gets one. This is a standing instruction — the user does not ask
+each time.
+
+The one exception: a thread where *he* is waiting on *her* gets no draft. If his
+message is the newest and he asked her something, there is nothing to say yet;
+label it and move on. Drafting a nudge to someone who already owes you an answer
+is noise, not service.
+
+Her mail is Hebrew — reply in Hebrew, sign `דלג׳ו`, and keep it to the one to
+four lines `config/voice.md` describes. Flowing prose, never bullets or bolded
+headers in a Hebrew message to her.
+
 ## Step 6 — label and report
 
-Apply `Runner/Handled` to every thread you acted on or judged noise, plus the
-workstream label (`Velocity + Apex` or `Tinu`) where it is missing.
+**Labelling is mandatory and is the last thing that gets skipped, never the
+first.** See `labelling` in the config. Every thread you read this run gets its
+workstream label before the run ends — not only the ones that produced a draft
+or a task:
+
+| Classification | Label to apply |
+|---|---|
+| Apex or VelocityX | `Velocity + Apex` |
+| Tinu — hardware, GPU, buildout, quoting | `Tinu` |
+| Personal, genuinely | `IMPORTANT` |
+| Noise — newsletters, notifications | nothing, but still `Runner/Handled` |
+
+Then `Runner/Handled` on all of them, including the noise. A thread you read and
+left unlabelled is a thread the next run reads again from scratch — that is how
+`Runner/Handled` ended up on ten threads while forty thousand sat untouched.
+
+Two rules that are easy to get wrong:
+
+- **Never mark a newsletter `IMPORTANT` to "label" it as personal.** `IMPORTANT`
+  is the backbone of lane A; polluting it breaks every future run. Noise gets
+  `Runner/Handled` alone.
+- **Never apply both workstream labels to one thread.** Pick one. If it is
+  genuinely both companies, it is `Velocity + Apex` — that label already means
+  both.
+
+Report the label counts alongside everything else, so a run that drafted nothing
+still shows it did the filing.
 
 Then report, short:
 
@@ -182,13 +244,17 @@ Tasks added (3)
 • Tinu — Reply to Amizur on UPS pricing
 • Velocity + Apex — Send Avishag the SF October list
 
-Drafts saved (2)
+Drafts saved (3)
+• Avishag — the questionnaire, confirms he is going through it
 • Amizur — asks what connects the first set until Bezeq lands
 • Gilad @ Joulix — reopens the quote after 31 days
 
+Labelled (6)
+• Velocity + Apex 3 · Tinu 2 · IMPORTANT 1 · Runner/Handled 6
+
 From chat: Avishag agreed Tue 8.9 11:00 with Avital (no calendar entry).
 
-Set aside: 14 newsletters.
+Set aside: 14 newsletters (Runner/Handled, no workstream label).
 ```
 
 Nothing else. No preamble, no "I hope this helps". If a run produced nothing,
