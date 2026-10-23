@@ -42,8 +42,14 @@ section; Tinu and personal are separate.
   the user to review and send.
 - **Never invent facts.** No dates, figures, or commitments not already in the
   thread. Leave `[[NADAV: ...]]` markers instead.
-- **Bilingual.** Hebrew and English both, matching the thread. Hebrew signs
-  `דלג׳ו`; English signs `Delgo`. Do not formalize the Hebrew.
+- **Bilingual.** Hebrew and English both, matching the thread. The sign-off
+  tracks *who is reading*, never which language the mail is in: Avishag, Dvir
+  and the Apex/Velocity team get `דלג׳ו`; everyone external gets `נדב`,
+  `Best, Nadav` or `Thanks, Nadav`; a short internal reply gets nothing.
+  **Never sign English mail `Delgo`** — it appears in none of the 62 sent
+  messages the voice profile was verified against, and it is the clearest tell
+  a draft was machine-written. `config/voice.md` is authoritative here.
+  Do not formalize the Hebrew and do not fix his typos.
 - **Gmail MCP tool names carry a server-id prefix that changes between
   sessions.** Resolve them with ToolSearch; never hardcode the prefix.
 - **Scope the mailbox.** ~45k threads sit unread in the inbox — "unread" is not

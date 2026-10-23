@@ -78,6 +78,12 @@ Report "nothing new" and do nothing else. A quiet run is a correct run — do no
 go looking for work to justify the pass. Most runs will still be quiet; the
 difference is that a quiet run now means quiet, rather than unread Avishag mail.
 
+**The gate is an early exit, not a conditional fire.** A Routine fires on a
+clock and on nothing else, so a session still starts eight times a day; what
+the gate saves is the entire pass behind it — typically one search call instead
+of thirty. Firing only when a genuinely new mail arrives would need an external
+mail-event trigger, which this setup does not have.
+
 ## Step 2 — triage
 
 Follow the triage skill. Classify by workstream, assign a state
