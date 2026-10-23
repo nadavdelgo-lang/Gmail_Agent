@@ -278,6 +278,20 @@ calendar_suggestions:
 chat_sources:
   drive_folder: "WhatsApp Exports"
   export_format: "WhatsApp .txt export (without media)"
+  also_accepted: >
+    A .csv export from a third-party tool. The parser sniffs the header for
+    date/time/sender/message columns and refuses rather than guessing a column
+    order it cannot recognise.
+  parser: scripts/parse_chat.py
+  parser_note: >
+    Always parse with the script, never by reading the file. WhatsApp's format
+    varies by platform, locale and phone language, and Hebrew exports carry
+    invisible bidirectional marks that defeat a naive read — the symptom is the
+    whole file parsing as a single enormous message, which then writes nonsense
+    into the roster with nothing looking broken. The script handles Android and
+    iOS, 12- and 24-hour clocks, dotted dates, multi-line messages and system
+    notices, and is covered by tests/test_parse_chat.py.
+    Usage: python3 scripts/parse_chat.py <file> [--since ISO] [--stats]
   watched:
     - name: Avishag Bohbot
       workstream: apex_velocityx
@@ -294,6 +308,8 @@ chat_sources:
     # obvious owner takes the workstream of what it actually discusses.
   rules:
     - Treat an export as read-only history. Never reply into WhatsApp.
+    - Chat is also a PEOPLE source, not only a task source. Alumni news lands
+      here that never reaches email — see /network-sync and config/network/.
     - An export is stale the moment it is taken. Trust email over an older
       export when the two conflict, and say which you used.
     - Chat is where commitments get made casually. A date agreed in chat is a
